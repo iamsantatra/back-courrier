@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "back-courrier", "back-courrier\back-courrier.csproj", "{10375478-7D7E-49C7-918A-6F679E3AA592}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10375478-7D7E-49C7-918A-6F679E3AA592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10375478-7D7E-49C7-918A-6F679E3AA592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10375478-7D7E-49C7-918A-6F679E3AA592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10375478-7D7E-49C7-918A-6F679E3AA592}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66FF6D25-917E-4781-BC2D-57CE69A3A1CC}
+	EndGlobalSection
+EndGlobal

@@ -33,7 +33,7 @@ namespace back_courrier.Pages
             var utilisateur = _context.Utilisateur.Where(u => u.Nom == Utilisateur.Nom && u.MotDePasse == Utilisateur.MotDePasse).FirstOrDefault();
             if (utilisateur != null)
             {
-                return RedirectToPage("Index");
+                return RedirectToPage("./CreationCourrier");
             }
             
             // Authentication failed, show error message

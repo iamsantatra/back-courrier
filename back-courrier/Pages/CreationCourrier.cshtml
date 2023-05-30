@@ -1,0 +1,74 @@
+﻿@page
+@model back_courrier.Pages.CreationCourrierModel
+
+@{
+    ViewData["Title"] = "CreationCourrier";
+}
+
+<h1>CreationCourrier</h1>
+
+<h4>Courrier</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Courrier.Reference" class="control-label"></label>
+                <input asp-for="Courrier.Reference" class="form-control" />
+                <span asp-validation-for="Courrier.Reference" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Courrier.Objet" class="control-label"></label>
+                <input asp-for="Courrier.Objet" class="form-control" />
+                <span asp-validation-for="Courrier.Objet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Courrier.DateCreation" class="control-label"></label>
+                <input asp-for="Courrier.DateCreation" class="form-control" />
+                <span asp-validation-for="Courrier.DateCreation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Courrier.Expediteur" class="control-label"></label>
+                <input asp-for="Courrier.Expediteur" class="form-control" />
+                <span asp-validation-for="Courrier.Expediteur" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Courrier.Flag" class="control-label"></label>
+                <input asp-for="Courrier.Flag" class="form-control" />
+                <span asp-validation-for="Courrier.Flag" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Courrier.Commentaire" class="control-label"></label>
+                <input asp-for="Courrier.Commentaire" class="form-control" />
+                <span asp-validation-for="Courrier.Commentaire" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Select User:</label>
+                <select id="SelectedUserId" name="SelectedUserId" class="form-control">
+                    <option value="">Select User</option>
+                    @foreach (var user in Model.Utilisateurs)
+                    {
+                        <option value="@user.Id">@user.Nom</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Courrier.IdReceptionniste" class="control-label"></label>
+                <input asp-for="Courrier.IdReceptionniste" class="form-control" />
+                <span asp-validation-for="Courrier.IdReceptionniste" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,5 +1,5 @@
 ﻿@page
-@model back_courrier.Pages.Login
+@model back_courrier.Pages.Index1
 @{
     ViewData["Title"] = "Login";
 }
@@ -8,26 +8,27 @@
 
 @if (ViewData.ModelState.Any())
 {
-    <div class="alert alert-danger">
+        <div class="alert alert-danger">
         @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
         {
-            <span>@error.ErrorMessage</span>
+                    <span>@error.ErrorMessage</span>
 
-            <br />
+                    <br />
         }
-    </div>
+        </div>
 }
 
 <form method="post">
     <div class="form-group">
         <label asp-for="Nom"></label>
-        <input asp-for="Nom" value="receptionniste" class="form-control" />
+        <input asp-for="Utilisateur.Nom" value="receptionniste" class="form-control" />
     </div>
     <div class="form-group mt-3">
         <label asp-for="MotDePasse"></label>
-        <input asp-for="MotDePasse" value="1234" type="password" class="form-control" />
+        <input asp-for="Utilisateur.MotDePasse" value="1234" type="password" class="form-control" />
     </div>
     <div class="form-group mt-3">
         <input type="submit" value="Login" class="btn btn-primary" />
     </div>
 </form>
+

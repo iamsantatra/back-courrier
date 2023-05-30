@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using back_courrier.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace back_courrier.Pages
 {
-    public class Index : PageModel
+    public class Index1 : PageModel
     {
         private readonly ILogger<Index> _logger;
         private readonly Data.ApplicationDbContext _context;
@@ -14,12 +15,12 @@ namespace back_courrier.Pages
         [BindProperty]
         public string MotDePasse { get; set; }
 
-        public Index(ILogger<Index> logger, Data.ApplicationDbContext context)
+        public Index1(ILogger<Index> logger, Data.ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
         }
-        public Models.Utilisateur Utilisateur { get; set; }
+        public Utilisateur Utilisateur { get; set; }
 
         public IActionResult OnPost()
         {
@@ -27,7 +28,7 @@ namespace back_courrier.Pages
             if (utilisateur != null)
             {
                 // Return to CreationCourrier page
-                return RedirectToPage("./Error");
+                return RedirectToPage("./Index");
             }
             // Authentication failed, show error message
             ModelState.AddModelError(string.Empty, "Nom d'utilisateur ou mot de passe incorrect");

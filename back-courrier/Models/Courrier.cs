@@ -39,5 +39,11 @@ namespace back_courrier.Models
         [ForeignKey("Utilisateur")]
         public int IdReceptionniste { get; set; }
 
+        // override toString
+        public override string ToString()
+        {
+            return "Id: " + Id + " Reference: " + Reference + " Objet: " + Objet + " DateCreation: " + DateCreation + " Expediteur: " + Expediteur + " Flag: " + Flag + " Commentaire: " + Commentaire + " IdReceptionniste: " + IdReceptionniste;
+        }
+
     }
 }

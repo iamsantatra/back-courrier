@@ -1,0 +1,43 @@
+﻿@page
+@model back_courrier.Pages.ListeCourrierModel
+@{
+ViewData["Title"] = "ListeCourrier";
+}
+
+<h1>ListeCourrier</h1>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">IdCourrierDestinataire</th>
+            <th scope="col">IdCourrier</th>
+            <th scope="col">Reference</th>
+            <th scope="col">Objet</th>
+            <th scope="col">Date création</th>
+            <th scope="col">Expéditeur</th>
+            <th scope="col">Flag</th>
+            <th scope="col">Commentaire</th>
+            <th scope="col">Département cible</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Transfert</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var courrier in Model.ListeCourrier)
+        {
+            <tr>
+                <td>@courrier.IdCourrierDestinataire</td>
+                <td>@courrier.IdCourrier</td>
+                <td>@courrier.Reference</td>
+                <td>@courrier.Objet</td>
+                <td>@courrier.DateCreation</td>
+                <td>@courrier.Expediteur</td>
+                <td>@courrier.Flag</td>
+                <td>@courrier.Commentaire</td>
+                <td>@courrier.NomDepartement</td>
+                <td>@courrier.NomStatut</td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>

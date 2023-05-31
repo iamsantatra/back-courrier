@@ -67,8 +67,10 @@ namespace back_courrier.Pages
                     historique.DateHistorique = DateTime.Now;
                     _context.Historique.Add(historique);
                 }
+                await _context.SaveChangesAsync(); // Save changes for Historique entities
 
                 transaction.Commit();
+                return RedirectToPage("./ListeCourrier");
             } catch (Exception e)
             {
                 Console.WriteLine(e);

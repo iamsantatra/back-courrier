@@ -12,7 +12,6 @@
         @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
         {
             <span>@error.ErrorMessage</span>
-
             <br />
         }
     </div>

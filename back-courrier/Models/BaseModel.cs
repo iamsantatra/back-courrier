@@ -3,9 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace back_courrier.Models
 {
-    public class Poste : BaseModel
+    public class BaseModel
     {
-        [Required]
-        public string Designation { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
     }
 }

@@ -25,10 +25,8 @@ namespace back_courrier.Pages
             return Page();
         }
 
-
         [BindProperty]
         public List<string> Flags { get; set; }
-
         [BindProperty]
         public Courrier Courrier { get; set; } = default!;
         [BindProperty]
@@ -41,6 +39,7 @@ namespace back_courrier.Pages
         {
             if (!ModelState.IsValid || _context.Courrier == null || Courrier == null)
             {
+                OnGet();
                 return Page();
             }
             var transaction = _context.Database.BeginTransaction();
@@ -60,11 +59,12 @@ namespace back_courrier.Pages
                     courrierDestinataire.IdDepartementDestinataire = idDepartement;
                     _context.CourrierDestinataire.Add(courrierDestinataire);
                     await _context.SaveChangesAsync(); // Save changes to generate the Id for the Courrier entity
+
                     // Ajout Historique
                     Historique historique = new Historique();
                     historique.IdCourrierDestinataire = courrierDestinataire.Id;
                     historique.IdStatut = 1;
-                    historique.DateHistorique = DateTime.Now;
+                    historique.DateHistorique = Courrier.DateCreation;
                     _context.Historique.Add(historique);
                 }
                 await _context.SaveChangesAsync(); // Save changes for Historique entities
@@ -73,17 +73,13 @@ namespace back_courrier.Pages
                 return RedirectToPage("./ListeCourrier");
             } catch (Exception e)
             {
-                Console.WriteLine(e);
                 transaction.Rollback();
                 // show error message from Exception object to the page 
-                ModelState.AddModelError(string.Empty, e.Message);  
-                throw;
+                ModelState.AddModelError(string.Empty, e.Message);
+                /*throw;*/
+                OnGet();
+                return Page();
             }
-
-            await _context.SaveChangesAsync();
-
-            /*return RedirectToPage("./Index");*/
-            return Page();
         }
     }
 }

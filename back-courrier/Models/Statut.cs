@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace back_courrier.Models
 {
-    public class Statut
+    public class Statut : BaseModel
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
         [Required]
         public string Designation { get; set; }
     }

@@ -3,20 +3,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace back_courrier.Models
 {
-    public class Utilisateur
+    public class Utilisateur : BaseModel
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
         [Required]
         public string Nom { get; set; }
         [Required]
         public string MotDePasse { get; set; }
-        [ForeignKey("Poste")]
-        public int IdPoste { get; set; }
-/*        public Poste poste { get; set; }*/
-        [ForeignKey("Departement")]
-        public int IdDepartement { get; set; }
-/*        public Departement Departement { get; set; }
-*/    }
+        public virtual Poste Poste { get; set; }
+        public virtual Departement Departement { get; set; }
+        [Required]
+        public int PosteId { get; set; }
+        [Required]
+        public int DepartementId { get; set; }
+        // override toString method
+        public override string ToString()
+        {
+            return "Utilisateur{" +
+                    "nom='" + Nom + '\'' +
+                    ", motDePasse='" + MotDePasse + '\'' +
+                    ", poste=" + Poste +
+                    ", departement=" + Departement +
+                    '}';
+        }
+
+    }
 }

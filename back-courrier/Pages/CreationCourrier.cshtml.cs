@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using back_courrier.Data;
 using back_courrier.Models;
@@ -9,8 +8,11 @@ namespace back_courrier.Pages
 {
     public class CreationCourrierModel : PageModel
     {
+        // crée une variable constant statut de valeur 1
+        private const int STATUT = 1;
+
         private readonly ApplicationDbContext _context;
-        public Utilisateur UtilisateurConn { get; set; }
+        public Utilisateur _utilisateurConn { get; set; }
         public CreationCourrierModel(ApplicationDbContext context)
         {
             _context = context;
@@ -19,71 +21,68 @@ namespace back_courrier.Pages
         public IActionResult OnGet()
         {
             // Get the object utilisateur from session
-            UtilisateurConn = HttpContext.Session.GetObject<Utilisateur>("utilisateur");
-            Departements = _context.Departement.ToList();
-            Flags = new List<string> { "normal", "urgent", "important" };
+            _utilisateurConn = HttpContext.Session.GetObject<Utilisateur>("utilisateur");
+            _departements = _context.Departement.ToList();
+            _flags = new List<string> { "normal", "urgent", "important" };
             return Page();
         }
 
-
         [BindProperty]
-        public List<string> Flags { get; set; }
+        public List<string> _flags { get; set; } 
 
         [BindProperty]
         public Courrier Courrier { get; set; } = default!;
         [BindProperty]
-        public List<Departement> Departements { get; set; } 
+        public List<Departement> _departements { get; set; } 
         [BindProperty]
-        public List<int> SelectedIdDepartement { get; set; }
+        public List<Departement> SelectedDepartement { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid || _context.Courrier == null || Courrier == null)
             {
+                OnGet();
                 return Page();
             }
             var transaction = _context.Database.BeginTransaction();
             try
             {
                 // Ajout courrier
-                Courrier.IdReceptionniste = HttpContext.Session.GetObject<Utilisateur>("utilisateur").Id;
-                Console.WriteLine(Courrier);
+                Courrier.Receptionniste = _utilisateurConn;
                 _context.Courrier.Add(Courrier);
                 await _context.SaveChangesAsync(); // Save changes to generate the Id for the Courrier entity
 
                 // Ajout CourrierDestinataire
-                foreach (var idDepartement in SelectedIdDepartement)
+                foreach (var Departement in SelectedDepartement)
                 {
                     CourrierDestinataire courrierDestinataire = new CourrierDestinataire();
-                    courrierDestinataire.IdCourrier = Courrier.Id;
-                    courrierDestinataire.IdDepartementDestinataire = idDepartement;
+                    courrierDestinataire.Courrier = Courrier;
+                    courrierDestinataire.DepartementDestinataire = Departement;
                     _context.CourrierDestinataire.Add(courrierDestinataire);
                     await _context.SaveChangesAsync(); // Save changes to generate the Id for the Courrier entity
                     // Ajout Historique
                     Historique historique = new Historique();
-                    historique.IdCourrierDestinataire = courrierDestinataire.Id;
-                    historique.IdStatut = 1;
-                    historique.DateHistorique = DateTime.Now;
+                    historique.CourrierDestinataire = courrierDestinataire;
+                    historique.Statut = _context.Statut.Find(STATUT);
+                    historique.DateHistorique = Courrier.DateCreation;
                     _context.Historique.Add(historique);
                 }
                 await _context.SaveChangesAsync(); // Save changes for Historique entities
 
                 transaction.Commit();
                 return RedirectToPage("./ListeCourrier");
-            } catch (Exception e)
-            {
-                Console.WriteLine(e);
-                transaction.Rollback();
-                // show error message from Exception object to the page 
-                ModelState.AddModelError(string.Empty, e.Message);  
-                throw;
             }
-
-            await _context.SaveChangesAsync();
-
-            /*return RedirectToPage("./Index");*/
-            return Page();
+            catch (Exception e)
+            {
+                // show error message from Exception object to the page 
+                ModelState.AddModelError(string.Empty, e.Message);
+                // stay in this page and don't forget to cal the OnGet method
+                transaction.Rollback();
+                OnGet();
+                return Page();
+                /*throw;*/
+            }
         }
     }
 }

@@ -9,11 +9,11 @@ namespace back_courrier.Pages
     public class ListeCourrierModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        public List<VueListeCourrier> ListeCourrier { get; set; }
+        /*public List<VueListeCourrier> ListeCourrier { get; set; }*/
         public void OnGet()
         {
             /*ListeCourrier = _context.VueListeCourrier.FromSqlRaw("SELECT * FROM VueListeCourrier").ToList();*/
-            ListeCourrier = _context.VueListeCourrier.FromSqlRaw("SELECT * FROM VueListeCourrier").ToList();
+           /* ListeCourrier = _context.VueListeCourrier.FromSqlRaw("SELECT * FROM VueListeCourrier").ToList();*/
         }
 
         public ListeCourrierModel(ApplicationDbContext context)

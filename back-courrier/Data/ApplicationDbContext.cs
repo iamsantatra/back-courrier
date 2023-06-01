@@ -1,5 +1,6 @@
 ﻿using back_courrier.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace back_courrier.Data
 {
@@ -12,11 +13,11 @@ namespace back_courrier.Data
         public DbSet<Poste> Poste { get; set; }
         public DbSet<Departement> Departement { get; set; }
         public DbSet<Utilisateur> Utilisateur { get; set; }
-
-        public DbSet<CourrierDestinataire> CourrierDestinataire { get; set; }
+        public DbSet<Statut> Statut { get; set; }
         public DbSet<Courrier> Courrier { get; set; }
+        public DbSet<CourrierDestinataire> CourrierDestinataire { get; set; }
         public DbSet<Historique> Historique { get; set; }
-        public DbSet<VueListeCourrier> VueListeCourrier { get; set; }
+        /*public DbSet<VueListeCourrier> VueListeCourrier { get; set; }*/
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -24,37 +25,37 @@ namespace back_courrier.Data
             // Add other configuration options as needed
         }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*base.OnModelCreating(modelBuilder);*/
-
-
-            modelBuilder.Entity<Poste>().ToTable("Poste");
-            modelBuilder.Entity<Departement>().ToTable("Departement");
-            modelBuilder.Entity<Utilisateur>().ToTable("Utilisateur");
-
             // Add initial data
-           /* modelBuilder.Entity<Departement>().HasData(
-                new Departement { Id = -1, Designation = "Ressource humaine" },
-                new Departement { Id = -2, Designation = "Finance" },
-                new Departement { Id = -3, Designation = "SI" }
+            Departement dp1 = new() { Id = 1, Designation = "Ressource humaine" };
+            Departement dp2 = new() { Id = 2, Designation = "Finance" };
+            Departement dp3 = new() { Id = 3, Designation = "SI" };
+            
+            modelBuilder.Entity<Departement>().HasData(dp1, dp2, dp3);
+
+            Poste p1 = new() { Id = 1, Designation = "receptionniste" };
+            Poste p2 = new() { Id = 2, Designation = "coursier" };
+            Poste p3 = new() { Id = 3, Designation = "secretaire" };
+            Poste p4 = new() { Id = 4, Designation = "directeur" };
+
+            modelBuilder.Entity<Poste>().HasData(p1, p2, p3, p4);
+
+            Utilisateur u1 = new() { Id = 1, Nom = "receptionniste", MotDePasse = "1234", PosteId = 1, DepartementId = 1 };
+            Utilisateur u2 = new() { Id = 2, Nom = "coursier", MotDePasse = "1234", PosteId = 2, DepartementId = 1 };
+            Utilisateur u3 = new() { Id = 3, Nom = "secretaire", MotDePasse = "1234", PosteId = 3, DepartementId = 1 };
+            Utilisateur u4 = new() { Id = 4, Nom = "directeur", MotDePasse = "1234", PosteId = 4, DepartementId = 1 };
+
+            modelBuilder.Entity<Utilisateur>().HasData(u1, u2, u3, u4);
+
+            modelBuilder.Entity<Statut>().HasData(
+                new Statut { Id = 1, Designation = "reçu par le receptionniste" },
+                new Statut { Id = 2, Designation = "transferé au coursier" },
+                new Statut { Id = 3, Designation = "transferé au sécrétaire" },
+                new Statut { Id = 4, Designation = "livré" }
             );
 
-            modelBuilder.Entity<Poste>().HasData(
-                new Poste { Id = -1, Designation = "receptionniste" },
-                new Poste { Id = -2, Designation = "coursier" },
-                new Poste { Id = -3, Designation = "secretaire" },
-                new Poste { Id = -4, Designation = "directeur" }
-            );
-
-            modelBuilder.Entity<Utilisateur>().HasData(
-                new Utilisateur { Id = -1, Nom = "receptionniste", MotDePasse = "1234", Id_Poste = 1, Id_Departement = -1 },
-                new Utilisateur { Id = -2, Nom = "coursier", MotDePasse = "1234", Id_Poste = 2, Id_Departement = -1 },
-                new Utilisateur { Id = -3, Nom = "secretaire", MotDePasse = "1234", Id_Poste = 3, Id_Departement = -1 },
-                new Utilisateur { Id = -4, Nom = "directeur", MotDePasse = "1234", Id_Poste = 4, Id_Departement = -1 }
-            );*/
-
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

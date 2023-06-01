@@ -19,14 +19,13 @@ ViewData["Title"] = "ListeCourrier";
             <th scope="col">Commentaire</th>
             <th scope="col">Département cible</th>
             <th scope="col">Statut</th>
-            <th scope="col">Transfert</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var courrier in Model.ListeCourrier)
         {
             <tr>
-                <td>@courrier.IdCourrierDestinataire</td>
+                <td><a href="@Url.Page("DetailsVueCourrier", new { id = courrier.IdCourrierDestinataire, idDepartement = courrier.IdDepartement, idStatut = courrier.IdStatut })">@courrier.IdCourrierDestinataire</a></td>
                 <td>@courrier.IdCourrier</td>
                 <td>@courrier.Reference</td>
                 <td>@courrier.Objet</td>
@@ -36,7 +35,6 @@ ViewData["Title"] = "ListeCourrier";
                 <td>@courrier.Commentaire</td>
                 <td>@courrier.NomDepartement</td>
                 <td>@courrier.NomStatut</td>
-                <td></td>
             </tr>
         }
     </tbody>

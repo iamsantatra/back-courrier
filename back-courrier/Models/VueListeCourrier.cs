@@ -16,5 +16,7 @@ namespace back_courrier.Models
         public int IdReceptionniste { get; set; }
         public string NomStatut { get; set; }
         public string NomDepartement { get; set; } 
+        public int IdDepartement { get; set; }
+        public int IdStatut { get; set; }
     }
 }

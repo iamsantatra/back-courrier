@@ -47,7 +47,6 @@ namespace back_courrier.Pages
             {
                 // Ajout courrier
                 Courrier.IdReceptionniste = HttpContext.Session.GetObject<Utilisateur>("utilisateur").Id;
-                Console.WriteLine(Courrier);
                 _context.Courrier.Add(Courrier);
                 await _context.SaveChangesAsync(); // Save changes to generate the Id for the Courrier entity
 

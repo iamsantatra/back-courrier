@@ -8,21 +8,20 @@
 
 <h1>CreationCourrier</h1>
 @*@Model.UtilisateurConn.Nom*@
-
-@if (ViewData.ModelState.Any())
-{
-    <div class="alert alert-danger">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <span>@error.ErrorMessage</span>
-
-            <br />
-        }
-    </div>
-}
 <hr />
 <div class="row">
     <div class="col-md-4">
+        @if (ViewData.ModelState.Any())
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <span>@error.ErrorMessage</span>
+
+                    <br />
+                }
+            </div>
+        }
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">

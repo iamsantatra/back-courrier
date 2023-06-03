@@ -15,6 +15,8 @@ namespace back_courrier.Models
         public int IdStatut { get; set; }
         [Required]
         public DateTime DateHistorique { get; set; }
+        [ForeignKey("Utilisateur")]
+        public int IdResponsable { get; set; }
 
     }
 }

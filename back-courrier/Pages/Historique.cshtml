@@ -1,0 +1,63 @@
+﻿@page
+@model back_courrier.Pages.HistoriqueModel
+
+@{
+    ViewData["Title"] = "Historique";
+}
+
+<h1>Historique</h1>
+
+<h4>Historique</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Historique.IdCourrierDestinataire" class="control-label"></label>
+                <input asp-for="Historique.IdCourrierDestinataire" value = "@Model.Historique.IdCourrierDestinataire" class="form-control" />
+                <span asp-validation-for="Historique.IdCourrierDestinataire" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Historique.IdStatut" class="control-label"></label>
+                <input asp-for="Historique.IdStatut" value="@Model.Historique.IdStatut" class="form-control" />
+                <span asp-validation-for="Historique.IdStatut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Historique.DateHistorique" class="control-label"></label>
+                <input asp-for="Historique.DateHistorique" class="form-control" />
+                <span asp-validation-for="Historique.DateHistorique" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label class="control-label">Responsable</label>
+                    @if (Model.Prochain != null && Model.Prochain.Any())
+                    {
+                        <select asp-for="Historique.IdResponsable" class="form-control">
+                            @foreach (var destinataire in Model.Prochain)
+                            {
+                                <option value="@destinataire.Id">@destinataire.Nom</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <p>En attente...</p>
+                    }
+            </div>
+            @if (Model.Prochain != null && Model.Prochain.Any())
+            {
+                <div class="form-group mt-3">
+                    <input type="submit" value="Transferer" class="btn btn-primary" />
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

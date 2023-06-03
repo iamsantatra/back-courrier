@@ -64,6 +64,7 @@ namespace back_courrier.Pages
                     historique.IdCourrierDestinataire = courrierDestinataire.Id;
                     historique.IdStatut = 1;
                     historique.DateHistorique = Courrier.DateCreation;
+                    historique.IdResponsable = Courrier.IdReceptionniste;
                     _context.Historique.Add(historique);
                 }
                 await _context.SaveChangesAsync(); // Save changes for Historique entities

@@ -14,15 +14,17 @@ namespace back_courrier.Pages
         public List<VueListeCourrier> ListeCourrier { get; set; }
         public void OnGet()
         {
-            /*ListeCourrier = _context.VueListeCourrier.FromSqlRaw("SELECT * FROM VueListeCourrier").ToList();*/
-            /*Utilisateur UtilisateurConn = HttpContext.Session.GetObject<Utilisateur>("utilisateur");*/
             ListeCourrier = _context.VueListeCourrier.FromSqlRaw("SELECT * FROM VueListeCourrier").ToList();
-            /*TransfertService.GetProchainUtilisateur(_context, UtilisateurConn, IdDepartement);*/
         }
 
         public ListeCourrierModel(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public List<ListeCourrier> GetListCourrierModel()
+        {
+            return null;
         }
 
     }

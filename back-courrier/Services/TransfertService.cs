@@ -10,20 +10,23 @@ namespace back_courrier.Services
             List<Utilisateur>? listProchain = null;
             int PosteCourante = UtilisateurCourant.IdPoste;
             int PosteSuivante = UtilisateurCourant.IdPoste+1;
-            //check if UtilisateurCourant.Nom is receptionniste
+            // receptionniste et reçu
             if (PosteCourante == 1 && IdStatut == 1)
             {
                 listProchain = _context.Utilisateur.Where(u => u.IdPoste == PosteSuivante).ToList();
             }
+            // coursier et transferé au coursier
             else if (PosteCourante == 2 && IdStatut == 2)
             {
                 listProchain = _context.Utilisateur.Where(u => u.IdPoste == PosteSuivante && u.IdDepartement == IdDepartement).ToList();
             }
-            else if(PosteCourante == 3 && IdStatut == 3)
+            // sécrétaire et transferé au sécrétaire
+            else if (PosteCourante == 3 && IdStatut == 3 && UtilisateurCourant.IdDepartement == IdDepartement)
             {
                 listProchain = _context.Utilisateur.Where(u => u.IdPoste == PosteSuivante && u.IdDepartement == IdDepartement).ToList();
             }
-            else if(PosteCourante == 4 && IdStatut == 4)
+            // directeur et transferé au directeur
+            else if (PosteCourante == 4 && IdStatut == 4 && UtilisateurCourant.IdDepartement == IdDepartement)
             {
                 listProchain = _context.Utilisateur.Where(u => u.IdPoste == PosteSuivante && u.IdDepartement == IdDepartement).ToList();
             }

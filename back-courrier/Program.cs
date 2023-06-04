@@ -14,7 +14,6 @@ builder.Services.AddSession(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("LocalDatabase");
 builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(connectionString));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

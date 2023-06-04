@@ -1,23 +1,89 @@
 ﻿@page
 @model back_courrier.Pages.ListeCourrierModel
+@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
 ViewData["Title"] = "ListeCourrier";
 }
 
-<h1>ListeCourrier</h1>
+<div class="row">
+    <div class="col-md-9">
+        <h1>ListeCourrier</h1>
+    </div>
+    <div class="col-md-1">
+        <form method="post">
+            <input type="hidden" name="GridHtml" />
+            <input type="submit" class="btn btn-success" id="btnSubmit" value="Exporter" asp-page-handler="Export" />
+        </form>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-primary" href="CreationCourrier">Ajouter courrier</a>
+    </div>
+</div>
+<div>
+    <form method="post" asp-page-handler="Search">
+        <div class="row">
+        <div class="col-md-4">
+            <input asp-for="VueListeCourrier.Reference" class="form-control" placeholder="Reference" />
+        </div>
+        <div class="col-md-4">
+            <input asp-for="VueListeCourrier.Objet" class="form-control" placeholder="Objet" />
+        </div>
+        <div class="col-md-4">
+            <input asp-for="VueListeCourrier.Expediteur" class="form-control" placeholder="Expediteur" />
+        </div>
+    </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                <input asp-for="@Model.DateCreationStart" class="form-control" placeholder="DateCreationStart" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="@Model.DateCreationEnd" class="form-control" placeholder="DateCreationEnd" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="VueListeCourrier.NomStatut" class="form-control" placeholder="NomStatut" />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                <input asp-for="VueListeCourrier.NomDepartement" class="form-control" placeholder="NomDepartement" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="VueListeCourrier.NomResponsable" class="form-control" placeholder="NomResponsable" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="VueListeCourrier.Flag" class="form-control" placeholder="Flag" />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                <input asp-for="VueListeCourrier.Commentaire" class="form-control" placeholder="Commentaire" />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary ">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
 
-<table class="table table-hover">
+<div id="Grid">
+    <table  class="table table-hover">
     <thead>
         <tr>
-            <th scope="col">IdCourrierDestinataire</th>
-            <th scope="col">IdCourrier</th>
+            <th scope="col">#</th>
+            <th scope="col">ID Courrier</th>
             <th scope="col">Reference</th>
             <th scope="col">Objet</th>
-            <th scope="col">Date création</th>
-            <th scope="col">Expéditeur</th>
+            <th scope="col">Date Creation</th>
+            <th scope="col">Expediteur</th>
             <th scope="col">Flag</th>
             <th scope="col">Commentaire</th>
-            <th scope="col">Département cible</th>
+            <th scope="col">Destinataire</th>
             <th scope="col">Responsable</th>
             <th scope="col">Statut</th>
         </tr>
@@ -41,3 +107,44 @@ ViewData["Title"] = "ListeCourrier";
         }
     </tbody>
 </table>
+</div>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        @if (Model._pageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?pageNumber=1">&laquo;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?pageNumber=@(Model._pageNumber - 1)">&lt;</a>
+            </li>
+        }
+
+        @for (int i = 1; i <= Model._totalPages; i++)
+        {
+            <li class="page-item @(i == Model._pageNumber ? "active" : "")">
+                <a class="page-link" href="?pageNumber=@i">@i</a>
+            </li>
+        }
+
+        @if (Model._pageNumber < Model._totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?pageNumber=@(Model._pageNumber + 1)">&gt;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?pageNumber=@Model._totalPages">&raquo;</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function () {
+            $("input[name='GridHtml']").val($("#Grid").html());
+        });
+    });
+</script>

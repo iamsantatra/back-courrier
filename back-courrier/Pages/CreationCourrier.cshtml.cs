@@ -66,8 +66,11 @@ namespace back_courrier.Pages
                 _courrierService.creationCourrier(Courrier, connectedUser, SelectedDepartements, FileUpload);
                 await _context.SaveChangesAsync();
                 /*return RedirectToPage("/ListeCourrier");*/
+                
                 return Page();
-            } catch (Exception e){
+
+            } catch (Exception e) {
+
                 ModelState.AddModelError(string.Empty, e.Message);
                 return OnGet();
             }

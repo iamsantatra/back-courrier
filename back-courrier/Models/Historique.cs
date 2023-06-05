@@ -15,5 +15,13 @@ namespace back_courrier.Models
         [ForeignKey("Utilisateur")]
         public int IdResponsable { get; set; }
         public Utilisateur Utilisateur { get; set; } 
+
+        public Historique() { }
+        public Historique(CourrierDestinataire courrierDestinataire, Statut statut, Utilisateur utilisateur)
+        {
+            this.CourrierDestinataire = courrierDestinataire;
+            this.Statut = statut;
+            this.Utilisateur = utilisateur;
+        }
     }
 }

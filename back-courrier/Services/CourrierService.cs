@@ -36,5 +36,36 @@ namespace back_courrier.Services
             });
             return courrier;
         }
+
+        public IQueryable<CourrierDestinataire> ListeCourrierBaseQuery()
+        {
+            return _context.CourrierDestinataire
+                    .Include(cd => cd.Courrier)
+                        .ThenInclude(c => c.ExpediteurInterne)
+                    .Include(cd => cd.Courrier)
+                        .ThenInclude(c => c.Recepteur)
+                    .Include(cd => cd.Courrier)
+                        .ThenInclude(c => c.Flag)
+                    .Include(cd => cd.Departement)
+                    .Include(cd => cd.Historique)
+                        .ThenInclude(h => h.Statut)
+                    .Include(cd => cd.Historique)
+                        .ThenInclude(h => h.Utilisateur);
+        }
+
+        public IList<CourrierDestinataire> listeCourrierCoursier(Utilisateur employe)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<CourrierDestinataire> listeCourrierReceptionniste()
+        {
+            return ListeCourrierBaseQuery().ToList();
+        }
+
+        public IList<CourrierDestinataire> listeCourrierSecDir(Utilisateur employe)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

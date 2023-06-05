@@ -7,5 +7,7 @@ namespace back_courrier.Models
     {
         [Required]
         public string Designation { get; set; }
+
+        public ICollection<CourrierDestinataire> CourrierDestinataires { get; set; }
     }
 }

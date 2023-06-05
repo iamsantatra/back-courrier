@@ -1,27 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace back_courrier.Models
 {
     public class CourrierDestinataire : BaseModel
     {
-        /*      Id INT NOT NULL IDENTITY(1,1),
-                IdCourrier INT not null,
-                IdDepartementDestinataire INT not null,*/
         [ForeignKey("Courrier")]
         public int IdCourrier { get; set; }
-        public Courrier Courrier { get; set; }
+        public Courrier? Courrier { get; set; }
         [ForeignKey("Departement")]
         public int IdDepartementDestinataire { get; set; }
-        public Departement Departement { get; set; }
-        public DateTime DateMaj { get; set; } = DateTime.Now;
+        public Departement? Departement { get; set; }
+        public DateTime? DateMaj { get; set; } = DateTime.Now;
 
         public CourrierDestinataire() { }
-
         public CourrierDestinataire(Courrier courrier, Departement destinataire)
         {
             this.Courrier = courrier;
-            this.Destinataire = destinataire;
+            this.Departement = destinataire;
         }
     }
 }

@@ -1,12 +1,15 @@
 using back_courrier.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using back_courrier.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
+builder.Services.AddScoped<IUploadService, UploadService>();
+builder.Services.AddScoped<ICourrierService, CourrierService>();
+builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
 // Add authentication services
 builder.Services.AddAuthentication(options =>
 {
@@ -30,6 +33,15 @@ var connectionString = builder.Configuration.GetConnectionString("LocalDatabase"
 builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(connectionString));
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureCreated();
+    // dbContext.Database.GenerateCreateScript();
+    dbContext.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -43,9 +55,24 @@ app.UseStaticFiles();
 app.UseSession();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == 403 || context.Response.StatusCode == 404)
+    {
+        context.Response.Redirect("/Error");
+    }
+});
+
 app.MapRazorPages();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapRazorPages();
+});
 
 app.Run();

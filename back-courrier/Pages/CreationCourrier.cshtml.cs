@@ -1,84 +1,75 @@
-﻿
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using back_courrier.Data;
 using back_courrier.Models;
 using back_courrier.Helper;
+using Microsoft.AspNetCore.Authorization;
+using back_courrier.Services;
+using System.Security.Claims;
 
 namespace back_courrier.Pages
 {
+    [Authorize(Roles = "REC")]
     public class CreationCourrierModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        public Utilisateur UtilisateurConn { get; set; }
-        public CreationCourrierModel(ApplicationDbContext context)
+        private readonly ICourrierService _courrierService;
+        private readonly IUtilisateurService _employeService;
+        private List<Departement> departements { get; set; }
+        public CreationCourrierModel(ApplicationDbContext context,
+            ICourrierService courrierService,
+            IUtilisateurService employeService)
         {
             _context = context;
+            _courrierService = courrierService;
+            _employeService = employeService;
+            departements = _context.Departement.ToList();
         }
 
         public IActionResult OnGet()
         {
-            // Get the object utilisateur from session
-            UtilisateurConn = HttpContext.Session.GetObject<Utilisateur>("utilisateur");
-            Departements = _context.Departement.ToList();
-            Flags = new List<string> { "normal", "urgent", "important" };
+            var flags = new List<string> { "normal", "urgent", "important" };
+
+            ViewData["IdExpediteur"] = new SelectList(_context.Departement, "Id", "Designation");
+            ViewData["Flag"] = new SelectList(flags);
+            ViewData["IdRecepteur"] = new SelectList(_context.Utilisateur, "Id", "Nom");
+            ViewData["Destinataires"] = new SelectList(_context.Departement, "Id", "Designation");
             return Page();
         }
 
         [BindProperty]
-        public List<string> Flags { get; set; }
-        [BindProperty]
         public Courrier Courrier { get; set; } = default!;
+
         [BindProperty]
-        public List<Departement> Departements { get; set; } 
+        public IFormFile FileUpload { get; set; }
+
         [BindProperty]
-        public List<int> SelectedIdDepartement { get; set; }
+        public List<string> SelectedDestinataires { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || _context.Courrier == null || Courrier == null)
+            ClaimsPrincipal currentUser = User;
+            /*if (!ModelState.IsValid || _context.Courrier == null || Courrier == null)*/
+            if (_context.Courrier == null || Courrier == null)
             {
-                OnGet();
-                return Page();
+                return OnGet();
             }
-            var transaction = _context.Database.BeginTransaction();
-            try
-            {
-                // Ajout courrier
-                Courrier.IdReceptionniste = HttpContext.Session.GetObject<Utilisateur>("utilisateur").Id;
-                _context.Courrier.Add(Courrier);
-                await _context.SaveChangesAsync(); // Save changes to generate the Id for the Courrier entity
-
-                // Ajout CourrierDestinataire
-                foreach (var idDepartement in SelectedIdDepartement)
-                {
-                    CourrierDestinataire courrierDestinataire = new CourrierDestinataire();
-                    courrierDestinataire.IdCourrier = Courrier.Id;
-                    courrierDestinataire.IdDepartementDestinataire = idDepartement;
-                    _context.CourrierDestinataire.Add(courrierDestinataire);
-                    await _context.SaveChangesAsync(); // Save changes to generate the Id for the Courrier entity
-
-                    // Ajout Historique
-                    Historique historique = new Historique();
-                    historique.IdCourrierDestinataire = courrierDestinataire.Id;
-                    historique.IdStatut = 1;
-                    historique.DateHistorique = Courrier.DateCreation;
-                    historique.IdResponsable = Courrier.IdReceptionniste;
-                    _context.Historique.Add(historique);
-                }
-                await _context.SaveChangesAsync(); // Save changes for Historique entities
-
-                transaction.Commit();
-                return RedirectToPage("./ListeCourrier");
-            } catch (Exception e)
-            {
-                transaction.Rollback();
-                // show error message from Exception object to the page 
-                ModelState.AddModelError(string.Empty, e.Message);
-                /*throw;*/
-                OnGet();
+            try {
+                string pseudo = currentUser.Identity.Name;
+                Utilisateur connectedUser = _employeService.GetUtilisateurByPseudo(pseudo);
+                List<Departement> SelectedDepartements = departements
+                    .Where(dept => SelectedDestinataires.Contains(dept.Id + "")).ToList();
+                connectedUser.Poste = _context.Poste.Find(connectedUser.IdPoste);
+                _courrierService.creationCourrier(Courrier, connectedUser, SelectedDepartements, FileUpload);
+                await _context.SaveChangesAsync();
+                /*return RedirectToPage("/ListeCourrier");*/
                 return Page();
+            } catch (Exception e){
+                ModelState.AddModelError(string.Empty, e.Message);
+                return OnGet();
             }
         }
     }

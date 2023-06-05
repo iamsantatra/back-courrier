@@ -4,6 +4,6 @@ namespace back_courrier.Services
 {
     public interface ICourrierService
     {
-        Courrier ajouterCourrier(Courrier courrier, Utilisateur employe, List<Departement> destinataires, IFormFile formFile);
+        Courrier creationCourrier(Courrier courrier, Utilisateur employe, List<Departement> destinataires, IFormFile formFile);
     }
 }

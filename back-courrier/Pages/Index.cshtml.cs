@@ -34,7 +34,7 @@ namespace back_courrier.Pages
                 // Save the object utilisateur in session
                 var claims = new List<Claim>{
                     new Claim(ClaimTypes.Name, UtilisateurConn.Pseudo),
-                    new Claim(ClaimTypes.Role, UtilisateurConn.Poste.Designation),
+                    new Claim(ClaimTypes.Role, UtilisateurConn.Poste.Code),
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
@@ -42,7 +42,7 @@ namespace back_courrier.Pages
                 await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, new ClaimsPrincipal(claimsIdentity));
                 // Return to CreationCourrier page
                 /*return RedirectToPage("./ListeCourrier");*/
-                return RedirectToPage("./CreationCourrier");
+                return RedirectToPage("/CreationCourrier");
             }
             // Authentication failed, show error message
             ModelState.AddModelError(string.Empty, "Nom d'utilisateur ou mot de passe incorrect");

@@ -22,8 +22,8 @@
                 }
             </div>
         }
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form method="post" enctype="multipart/form-data">
+@*            <div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
             <div class="form-group">
                 <label asp-for="Courrier.Reference" class="control-label"></label>
                 <input asp-for="Courrier.Reference" value="Test" class="form-control" />
@@ -35,36 +35,24 @@
                 <span asp-validation-for="Courrier.Objet" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Courrier.Expediteur" class="control-label"></label>
-                <input asp-for="Courrier.Expediteur" value="Test" class="form-control" />
-                <span asp-validation-for="Courrier.Expediteur" class="text-danger"></span>
+                <label asp-for="Courrier.Flag" class="control-label">Flag</label>
+                <select asp-for="Courrier.Flag" class="form-control" asp-items="ViewBag.Flag"></select>
             </div>
             <div class="form-group">
-                <label class="control-label">Flag:</label>
-                @*// options of the enum are the Flag names*@
-                <select asp-for="Courrier.Flag" class="form-control">
-                    @foreach (var flag in Model.Flags)
-                    {
-                        <option value="@flag">@flag</option>
-                    }
-                </select>
-                <span asp-validation-for="Courrier.Flag" class="text-danger"></span>
+                    <label asp-for="Courrier.IdExpediteur" class="control-label">Expéditeur interne</label>
+                    <select asp-for="Courrier.IdExpediteur" class="form-control" asp-items="ViewBag.IdExpediteur">
+                        <option value="">Choisissez</option>
+                    </select>
             </div>
             <div class="form-group">
                 <label class="control-label">Destinataire(s):</label>
-                @*// options of the list are the Departement names multi select*@
-                <select asp-for="SelectedIdDepartement" class="form-control" multiple="multiple">
-                    @foreach (var departement in Model.Departements)
-                    {
-                        <option value="@departement.Id">@departement.Designation</option>
-                    }
-                </select>
+                <select multiple name="SelectedDestinataires" class="form-control" asp-items="ViewBag.Destinataires"></select>
             </div>
-            @*<div class="form-group">
-                <label asp-for="Courrier.IdReceptionniste" class="control-label"></label>
-                <input asp-for="Courrier.IdReceptionniste" class="form-control" />
-                <span asp-validation-for="Courrier.IdReceptionniste" class="text-danger"></span>
-            </div>*@
+            <div class="form-group">
+                <label asp-for="Courrier.ExpediteurExterne" class="control-label">Expéditeur externe</label>
+                <input asp-for="Courrier.ExpediteurExterne" class="form-control" />
+                <span asp-validation-for="Courrier.ExpediteurExterne" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Courrier.DateCreation" class="control-label"></label>
                 <input asp-for="Courrier.DateCreation" class="form-control" />
@@ -74,6 +62,11 @@
                 <label asp-for="Courrier.Commentaire" class="control-label"></label>
                 <textarea cols="20" asp-for="Courrier.Commentaire" value="Test" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Courrier.Commentaire" class="text-danger"></span>
+            </div>
+             <div class="custom-file">
+                <input asp-for="FileUpload" type="file" id="fileUpload">
+                @*<input type="file" name="FileUpload" id="fileUpload" />*@
+                <label for="fileUpload" class="custom-file-label"></label>
             </div>
             <div class="form-group mt-3">
                 <input type="submit" value="Ajouter" class="btn btn-primary" />
@@ -87,5 +80,11 @@
 </div>
 
 @section Scripts {
+     <script>
+        document.getElementById("fileUpload").addEventListener("change", function () {
+            var fileName = this.files[0].name;
+            document.querySelector(".custom-file-label").innerHTML = fileName;
+        });
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

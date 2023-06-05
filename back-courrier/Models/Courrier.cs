@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace back_courrier.Models
 {
     public class Courrier : BaseModel {
-        public string Reference { get; set; }
+        public string? Reference { get; set; }
 
         [Required]
         public string Objet { get; set; }
@@ -17,12 +17,13 @@ namespace back_courrier.Models
         public string? Commentaire { get; set; }
         public string? Fichier { get; set; }
 
-        [ForeignKey("Utilisateur")]
+        [ForeignKey("Recepteur")]
         public int IdReceptionniste { get; set; }
+        public Utilisateur? Recepteur { get; set; }
         [ForeignKey("ExpediteurInterne")]
         public int? IdExpediteur { get; set; }
-        public Departement? ExpediteurInterne { get; set; } = default!;
+        public Departement? ExpediteurInterne { get; set; }
 
-        public ICollection<CourrierDestinataire> Destinataires { get; set; }
+        public ICollection<CourrierDestinataire>? Destinataires { get; set; }
     }
 }

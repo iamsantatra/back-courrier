@@ -41,7 +41,8 @@ namespace back_courrier.Pages
 
                 await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, new ClaimsPrincipal(claimsIdentity));
                 // Return to CreationCourrier page
-                return RedirectToPage("./ListeCourrier");
+                /*return RedirectToPage("./ListeCourrier");*/
+                return RedirectToPage("./CreationCourrier");
             }
             // Authentication failed, show error message
             ModelState.AddModelError(string.Empty, "Nom d'utilisateur ou mot de passe incorrect");

@@ -5,18 +5,15 @@ namespace back_courrier.Models
 {
     public class Historique : BaseModel
     {
-        /*    Id INT NOT NULL IDENTITY(1,1),
-            IdCourrierDestinataire INT not null,
-            IdStatut INT not null,
-            DateHistorique DATETIME null,*/
         [ForeignKey("CourrierDestinataire")]
         public int IdCourrierDestinataire { get; set; }
+        public CourrierDestinataire CourrierDestinataire { get; set; }
         [ForeignKey("Statut")]
         public int IdStatut { get; set; }
-        [Required]
-        public DateTime DateHistorique { get; set; }
+        public Statut Statut { get; set; }
+        public DateTime DateHistorique { get; set; } = DateTime.Now;
         [ForeignKey("Utilisateur")]
         public int IdResponsable { get; set; }
-
+        public Utilisateur Utilisateur { get; set; } 
     }
 }

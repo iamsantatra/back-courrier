@@ -1,10 +1,24 @@
 using back_courrier.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// Add authentication services
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    //options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+})
+.AddCookie(IdentityConstants.ApplicationScheme, options =>
+{
+    // Configure cookie options
+    options.Cookie.Name = "token";
+    // Other cookie options...
+});
 
 builder.Services.AddDistributedMemoryCache();   
 builder.Services.AddSession(options =>

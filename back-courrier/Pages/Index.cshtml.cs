@@ -1,6 +1,8 @@
-﻿using back_courrier.Helper;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace back_courrier.Pages
 {
@@ -10,7 +12,7 @@ namespace back_courrier.Pages
         private readonly Data.ApplicationDbContext _context;
 
         [BindProperty]
-        public string Nom { get; set; }
+        public string Pseudo { get; set; }
         [BindProperty]
         public string MotDePasse { get; set; }
 
@@ -23,13 +25,21 @@ namespace back_courrier.Pages
         [BindProperty]
         public Models.Utilisateur Utilisateur { get; set; }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
-            var UtilisateurConn = _context.Utilisateur.Where(u => u.Nom == Utilisateur.Nom && u.MotDePasse == Utilisateur.MotDePasse).FirstOrDefault();
+            var UtilisateurConn = _context.Utilisateur.Where(u => u.Pseudo == Utilisateur.Pseudo && u.MotDePasse == Utilisateur.MotDePasse).FirstOrDefault();
             if (UtilisateurConn != null)
             {
+                UtilisateurConn.Poste = _context.Poste.Find(UtilisateurConn.IdPoste);
                 // Save the object utilisateur in session
-                HttpContext.Session.SetObject("utilisateur", UtilisateurConn);
+                var claims = new List<Claim>{
+                    new Claim(ClaimTypes.Name, UtilisateurConn.Pseudo),
+                    new Claim(ClaimTypes.Role, UtilisateurConn.Poste.Designation),
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
+
+                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, new ClaimsPrincipal(claimsIdentity));
                 // Return to CreationCourrier page
                 return RedirectToPage("./ListeCourrier");
             }

@@ -63,7 +63,7 @@ namespace back_courrier.Pages
                 List<Departement> SelectedDepartements = departements
                     .Where(dept => SelectedDestinataires.Contains(dept.Id + "")).ToList();
                 connectedUser.Poste = _context.Poste.Find(connectedUser.IdPoste);
-                _courrierService.creationCourrier(Courrier, connectedUser, SelectedDepartements, FileUpload);
+                _courrierService.CreationCourrier(Courrier, connectedUser, SelectedDepartements, FileUpload);
                 await _context.SaveChangesAsync();
                 /*return RedirectToPage("/ListeCourrier");*/
                 

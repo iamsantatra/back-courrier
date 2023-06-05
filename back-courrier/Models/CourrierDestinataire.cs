@@ -11,7 +11,6 @@ namespace back_courrier.Models
         public int IdDepartementDestinataire { get; set; }
         public Departement? Departement { get; set; }
         public DateTime? DateMaj { get; set; } = DateTime.Now;
-        public Historique? Historique { get; set; }
         public CourrierDestinataire() { }
         public CourrierDestinataire(Courrier courrier, Departement destinataire)
         {

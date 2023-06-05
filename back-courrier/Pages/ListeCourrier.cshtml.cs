@@ -9,39 +9,69 @@ using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Mvc;
 using iText.Kernel.Geom;
 using System.Drawing.Printing;
+using back_courrier.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace back_courrier.Pages
 {
     public class ListeCourrierModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        public List<VueListeCourrier> ListeCourrier { get; set; }
+        private readonly ICourrierService _courrierService;
+        private readonly IUtilisateurService _employeService;
+        private readonly IConfiguration _configuration;
+        private Utilisateur _currentUser;
+        public IList<CourrierDestinataire> courrierDestinataire { get; set; } = default!;
+
         public int _pageNumber { get; set; } = 1;
         public int _totalPages { get; set; }
 
         public int _pageSize { get; set; } = 10;
 
-        public void OnGet(int pageNumber = 1, int pageSize = 10)
-        {
-            GetListCourrierModel(pageNumber, pageSize);
-            _pageNumber = pageNumber;
-            _totalPages = CalculateTotalPages(pageSize);
-        }
+        /*        public void OnGet(int pageNumber = 1, int pageSize = 10)
+                {
+                    GetListCourrierModel(pageNumber, pageSize);
+                    _pageNumber = pageNumber;
+                    _totalPages = CalculateTotalPages(pageSize);
+                }*/
 
+        public async Task OnGetAsync()
+        {
+            string dirRole = _configuration.GetValue<string>("Constants:Role:DirRole");
+            string secRole = _configuration.GetValue<string>("Constants:Role:SecRole");
+            string courRole = _configuration.GetValue<string>("Constants:Role:CourRole");
+            string recRole = _configuration.GetValue<string>("Constants:Role:RecRole");
+            ViewData["DirRole"] = dirRole;
+            ViewData["SecRole"] = secRole;
+            ViewData["CourRole"] = courRole;
+            ViewData["RecRole"] = recRole;
+
+            if (_context.Courrier != null)
+            {
+                _currentUser = _employeService.GetUtilisateurByClaim(User);
+                _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
+                courrierDestinataire = _courrierService.listeCourrier(_currentUser);
+            }
+        }
+/*
         [BindProperty]
-        public VueListeCourrier VueListeCourrier { get; set; }
+        public VueListeCourrier VueListeCourrier { get; set; }*/
 
         [BindProperty]
         public DateTime? DateCreationStart { get; set; } = null;
 
         [BindProperty]
         public DateTime? DateCreationEnd { get; set; } = null;
-        public ListeCourrierModel(ApplicationDbContext context)
+        public ListeCourrierModel(ApplicationDbContext context, ICourrierService courrierService,
+            IUtilisateurService employeService, IConfiguration configuration)
         {
             _context = context;
+            _courrierService = courrierService;
+            _employeService = employeService;
+            _configuration = configuration;
         }
 
-        public void GetListCourrierModel(int pageNumber, int pageSize)
+        /*public void GetListCourrierModel(int pageNumber, int pageSize)
         {
             int skipAmount = (pageNumber - 1) * pageSize;
 
@@ -53,9 +83,9 @@ namespace back_courrier.Pages
 
             // Exécuter la requête et renvoyer les résultats
             ListeCourrier = paginatedQuery.ToList();
-        }
+        }*/
 
-        public IQueryable<VueListeCourrier> GetListCourrierQuery()
+        /*public IQueryable<VueListeCourrier> GetListCourrierQuery()
         {
             // Retrieve a subset of VueListeCourrier records based on the page number and page size
             var query = _context.VueListeCourrier
@@ -64,16 +94,16 @@ namespace back_courrier.Pages
 
             // Exécuter la requête et renvoyer les résultats
             return query;
-        }
+        }*/
 
-        public int CalculateTotalPages(int pageSize)
+        /*public int CalculateTotalPages(int pageSize)
         {
             int totalRecords = _context.VueListeCourrier.Count();
             int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             return totalPages;
-        }
+        }*/
 
-        public FileResult OnPostExport(string GridHtml)
+        /*public FileResult OnPostExport(string GridHtml)
         {
             using (MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(GridHtml)))
             {
@@ -85,8 +115,8 @@ namespace back_courrier.Pages
                 pdfDocument.Close();
                 return File(byteArrayOutputStream.ToArray(), "application/pdf", "Grid.pdf");
             }
-        }
-        public IActionResult OnPostSearch()
+        }*/
+        /*public IActionResult OnPostSearch()
         {
             Boolean result = Search(_pageNumber, _pageSize);
             if (!result)
@@ -95,9 +125,9 @@ namespace back_courrier.Pages
             }
             _totalPages = CalculateTotalPages(_pageSize);
             return Page();
-        }
+        }*/
 
-        public Boolean Search(int pageNumber, int pageSize)
+        /*public Boolean Search(int pageNumber, int pageSize)
         {
             int skipAmount = (pageNumber - 1) * pageSize;
             var query = GetListCourrierQuery();
@@ -170,6 +200,6 @@ namespace back_courrier.Pages
             var paginatedQuery = query.Skip(skipAmount).Take(pageSize);
             this.ListeCourrier = paginatedQuery.ToList();
             return isSearch;
-        }
+        }*/
     }
 }

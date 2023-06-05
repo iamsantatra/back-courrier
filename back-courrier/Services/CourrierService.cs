@@ -37,35 +37,55 @@ namespace back_courrier.Services
             return courrier;
         }
 
-        public IQueryable<CourrierDestinataire> ListeCourrierBaseQuery()
+        public IQueryable<Historique> ListeCourrierBaseQuery()
         {
-            return _context.CourrierDestinataire
-                    .Include(cd => cd.Courrier)
-                        .ThenInclude(c => c.ExpediteurInterne)
-                    .Include(cd => cd.Courrier)
+            return _context.Historique
+                    .Include(h => h.CourrierDestinataire)
+                        .ThenInclude(cd => cd.Courrier)
+                            .ThenInclude(c => c.ExpediteurInterne)
+                     .Include(h => h.CourrierDestinataire)
+                        .ThenInclude(cd => cd.Courrier)
+                            .ThenInclude(c => c.Recepteur)
+                     .Include(h => h.CourrierDestinataire)
+                        .ThenInclude(cd => cd.Departement)
+                            .ThenInclude(c => c.ExpediteurInterne)
+                    .Include(h => h.Statut)
                         .ThenInclude(c => c.Recepteur)
-                    .Include(cd => cd.Courrier)
-                        .ThenInclude(c => c.Flag)
+                    .Include(h => h.Utilisateur)
+                        .ThenInclude(c => c.Recepteur)
                     .Include(cd => cd.Departement)
-                    .Include(cd => cd.Historique)
-                        .ThenInclude(h => h.Statut)
-                    .Include(cd => cd.Historique)
-                        .ThenInclude(h => h.Utilisateur);
         }
 
-        public IList<CourrierDestinataire> listeCourrierCoursier(Utilisateur employe)
+        public IList<Historique> listeCourrierCoursier(Utilisateur employe)
         {
             throw new NotImplementedException();
         }
 
-        public IList<CourrierDestinataire> listeCourrierReceptionniste()
+        public IList<Historique> listeCourrierReceptionniste()
         {
             return ListeCourrierBaseQuery().ToList();
         }
 
-        public IList<CourrierDestinataire> listeCourrierSecDir(Utilisateur employe)
+        public IList<Historique> listeCourrierSecDir(Utilisateur employe)
         {
             throw new NotImplementedException();
+        }
+
+        public IList<Historique> listeCourrier(Utilisateur employe)
+        {
+            if (employe.Poste.Code == _configuration["Constants:Role:RecRole"])
+            {
+                return listeCourrierReceptionniste();
+            }/*
+            if (employe.Poste.code == _configuration["Constants:Role:CouRole"])
+            {
+                return listeCourrierCoursier(employe);
+            }
+            if ((employe.Poste.code == _configuration["Constants:Role:SecRole"]) || (employe.Poste.code == _configuration["Constants:Role:DirRole"]))
+            {
+                return listeCourrierSecDir(employe);
+            }*/
+            return null;
         }
     }
 }

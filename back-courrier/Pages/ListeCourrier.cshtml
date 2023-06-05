@@ -2,7 +2,7 @@
 @model back_courrier.Pages.ListeCourrierModel
 @addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-ViewData["Title"] = "ListeCourrier";
+    ViewData["Title"] = "ListeCourrier";
 }
 
 <div class="row">
@@ -15,11 +15,14 @@ ViewData["Title"] = "ListeCourrier";
             <input type="submit" class="btn btn-success" id="btnSubmit" value="Exporter" asp-page-handler="Export" />
         </form>
     </div>
-    <div class="col-md-2">
-        <a class="btn btn-primary" href="CreationCourrier">Ajouter courrier</a>
-    </div>
+    @if (User.IsInRole(ViewData["RecRole"].ToString()))
+    {
+        <div class="col-md-2">
+            <a class="btn btn-primary" href="CreationCourrier">Ajouter courrier</a>
+        </div>
+    }
 </div>
-<div>
+@*<div>
     <form method="post" asp-page-handler="Search">
         <div class="row">
         <div class="col-md-4">
@@ -69,9 +72,9 @@ ViewData["Title"] = "ListeCourrier";
                 </div>
             </div>
     </form>
-</div>
+</div>*@
 
-<div id="Grid">
+@*<div id="Grid">
     <table  class="table table-hover">
     <thead>
         <tr>
@@ -147,4 +150,144 @@ ViewData["Title"] = "ListeCourrier";
             $("input[name='GridHtml']").val($("#Grid").html());
         });
     });
-</script>
+</script>*@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Objet)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Reference)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Commentaire)
+            </th>
+            <th>
+                Pièce Jointe
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.DateCreation)
+            </th>
+            <th>
+                Expéditeur
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Recepteur)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Flag)
+            </th>
+            <th>
+                Destinataire
+            </th>
+            <th>
+                Status
+            </th>
+            @if (User.IsInRole(ViewData["CourRole"].ToString()))
+            {
+                <th>
+                    Transférer
+                </th>
+            }
+            else
+            {
+                <th>
+                    Coursier
+                </th>
+            }
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.courrierDestinataire)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Courrier.Objet)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Courrier.Reference)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Courrier.Commentaire)
+                </td>
+                <td>
+                    @{
+                        var fileName = System.IO.Path.GetFileName(item.Courrier.Fichier);
+                    }
+                    @fileName
+                </td>
+                <td>
+                    @item.Courrier.DateCreation.ToString("dd MMM yyyy HH:mm")
+
+                </td>
+                @if (item.Courrier.ExpediteurInterne != null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Courrier.ExpediteurInterne.Designation)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Courrier.ExpediteurExterne)
+                    </td>
+                }
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Courrier.Recepteur.Nom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Courrier.Flag)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Departement.Designation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Historique.Statut.Designation)
+                </td>
+@*                @if (User.IsInRole(ViewData["CouRole"].ToString()))
+                {
+                    <td>
+                        <a asp-page="Liste" asp-page-handler="Transferer"
+                   asp-route-courrier="@item.IdCourrier" asp-route-destinataire="@item.IdDestinataire"
+                   asp-route-role="@ViewData["DirRole"]" class="transfer-button">
+                            Directeur
+                        </a>
+
+                        <a asp-page="Liste" asp-page-handler="Transferer"
+                   asp-route-courrier="@item.IdCourrier" asp-route-destinataire="@item.IdDestinataire"
+                   asp-route-role="@ViewData["SecRole"]" class="transfer-button">
+                            Secrétaire
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td class="coursier-name">
+                        @if (item.IdCoursier == null)
+                        {
+                            <a asp-page="Assigner" asp-route-courrier="@item.IdCourrier"
+                   asp-route-destinataire="@item.IdDestinataire" class="assign-button">
+                                Assigner
+                            </a>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Coursier.Nom)
+                        }
+
+                    </td>
+                }*@
+
+                @*  <td>
+            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+            <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>*@
+            </tr>
+        }
+    </tbody>
+</table>

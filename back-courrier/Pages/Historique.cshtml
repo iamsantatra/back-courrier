@@ -80,12 +80,6 @@
                 <input asp-for="Historique.CourrierDestinataire.Departement.Designation" value="@Model.Historique.CourrierDestinataire.Departement.Designation" class="form-control" disabled />
                 <span asp-validation-for="Historique.CourrierDestinataire.Departement.Designation" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label class="control-label">Statut</label>
-                <input asp-for="Historique.Statut.Designation" value="@Model.Historique.Statut.Designation" class="form-control" disabled />
-                <span asp-validation-for="Historique.Statut.Designation" class="text-danger"></span>
-            </div>
-           
             
                 @if (Model.Prochain != null && Model.Prochain.Any())
                 {
@@ -107,9 +101,9 @@
                             <input asp-for="Historique.DateHistorique" class="form-control" />
                             <span asp-validation-for="Historique.DateHistorique" class="text-danger"></span>
                         </div>
-                        <input type="hidden" asp-for="Historique.Id" />
-                        <input type="hidden" asp-for="Historique.IdStatut" />
-                        <input type="hidden" asp-for="Historique.IdCourrierDestinataire" />
+                        @*<input type="hidden" asp-for="Historique.Id" value="@Model.Historique.Id" />*@
+                        @*<input type="hidden" asp-for="Historique.IdStatut" value="@Model.Historique.IdStatut" />*@
+                        <input type="hidden" asp-for="Historique.IdCourrierDestinataire" value="@Model.Historique.IdCourrierDestinataire" />
                         <div class="form-group mt-3">
                             <input type="submit" value="Transferer" class="btn btn-primary" />
                         </div>

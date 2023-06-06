@@ -64,7 +64,7 @@ namespace back_courrier.Pages
 
         public IActionResult OnGet()
         {
-            if(User.Identity.IsAuthenticated)
+            if(User.Identity.IsAuthenticated)   
             {
                 return RedirectToPage("/ListeCourrier");
             }

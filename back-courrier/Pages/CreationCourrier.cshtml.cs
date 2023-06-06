@@ -65,9 +65,9 @@ namespace back_courrier.Pages
                 connectedUser.Poste = _context.Poste.Find(connectedUser.IdPoste);
                 _courrierService.CreationCourrier(Courrier, connectedUser, SelectedDepartements, FileUpload);
                 await _context.SaveChangesAsync();
-                /*return RedirectToPage("/ListeCourrier");*/
-                
-                return Page();
+                return RedirectToPage("/ListeCourrier");
+
+                /*return Page();*/
 
             } catch (Exception e) {
 

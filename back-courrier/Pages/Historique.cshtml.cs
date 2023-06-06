@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using back_courrier.Data;
 using back_courrier.Models;
-using back_courrier.Helper;
 using back_courrier.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
-using System.Net.NetworkInformation;
+
 
 namespace back_courrier.Pages
 {
@@ -56,6 +53,7 @@ namespace back_courrier.Pages
             }
             try
             {
+                Historique.IdStatut = idStatut;
                 _courrierService.TransfertCourrier(Historique);
                 await _context.SaveChangesAsync();
 

@@ -11,9 +11,11 @@ using iText.Kernel.Geom;
 using System.Drawing.Printing;
 using back_courrier.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace back_courrier.Pages
 {
+    [Authorize]
     public class ListeCourrierModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -21,20 +23,10 @@ namespace back_courrier.Pages
         private readonly IUtilisateurService _employeService;
         private readonly IConfiguration _configuration;
         private Utilisateur _currentUser;
-        public IList<CourrierDestinataire> courrierDestinataire { get; set; } = default!;
-
+        public IList<Historique> listeCourrier { get; set; } = default!;
         public int _pageNumber { get; set; } = 1;
         public int _totalPages { get; set; }
-
         public int _pageSize { get; set; } = 10;
-
-        /*        public void OnGet(int pageNumber = 1, int pageSize = 10)
-                {
-                    GetListCourrierModel(pageNumber, pageSize);
-                    _pageNumber = pageNumber;
-                    _totalPages = CalculateTotalPages(pageSize);
-                }*/
-
         public async Task OnGetAsync()
         {
             string dirRole = _configuration.GetValue<string>("Constants:Role:DirRole");
@@ -50,7 +42,7 @@ namespace back_courrier.Pages
             {
                 _currentUser = _employeService.GetUtilisateurByClaim(User);
                 _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
-                courrierDestinataire = _courrierService.listeCourrier(_currentUser);
+                listeCourrier = _courrierService.ListeCourrier(_currentUser);
             }
         }
 /*

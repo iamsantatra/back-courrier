@@ -156,28 +156,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Objet)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Objet)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Reference)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Reference)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Commentaire)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Commentaire)
             </th>
             <th>
                 Pièce Jointe
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.DateCreation)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.DateCreation)
             </th>
             <th>
                 Expéditeur
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Recepteur)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Recepteur)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.courrierDestinataire[0].Courrier.Flag)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Flag)
             </th>
             <th>
                 Destinataire
@@ -185,70 +185,64 @@
             <th>
                 Status
             </th>
-            @if (User.IsInRole(ViewData["CourRole"].ToString()))
+            @if (!User.IsInRole(ViewData["DirRole"].ToString()))
             {
                 <th>
                     Transférer
                 </th>
             }
-            else
-            {
-                <th>
-                    Coursier
-                </th>
-            }
-
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.courrierDestinataire)
+        @foreach (var item in Model.listeCourrier)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Courrier.Objet)
+                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Objet)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Courrier.Reference)
+                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Reference)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Courrier.Commentaire)
+                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Commentaire)
                 </td>
                 <td>
                     @{
-                        var fileName = System.IO.Path.GetFileName(item.Courrier.Fichier);
+                        var fileName = System.IO.Path.GetFileName(item.CourrierDestinataire.Courrier.Fichier);
                     }
                     @fileName
                 </td>
                 <td>
-                    @item.Courrier.DateCreation.ToString("dd MMM yyyy HH:mm")
+                    @item.CourrierDestinataire.Courrier.DateCreation.ToString("dd MMM yyyy HH:mm")
 
                 </td>
-                @if (item.Courrier.ExpediteurInterne != null)
+                @if (item.CourrierDestinataire.Courrier.ExpediteurInterne != null)
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Courrier.ExpediteurInterne.Designation)
+                        @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.ExpediteurInterne.Designation)
                     </td>
                 }
                 else
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Courrier.ExpediteurExterne)
+                        @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.ExpediteurExterne)
                     </td>
                 }
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.Courrier.Recepteur.Nom)
+                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Recepteur.Nom)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Courrier.Flag)
+                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Flag)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Departement.Designation)
+                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Departement.Designation)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Historique.Statut.Designation)
+                    @Html.DisplayFor(modelItem => item.Statut.Designation)
                 </td>
-@*                @if (User.IsInRole(ViewData["CouRole"].ToString()))
+
+                @if (User.IsInRole(ViewData["CouRole"].ToString()))
                 {
                     <td>
                         <a asp-page="Liste" asp-page-handler="Transferer"
@@ -278,15 +272,8 @@
                         {
                             @Html.DisplayFor(modelItem => item.Coursier.Nom)
                         }
-
                     </td>
-                }*@
-
-                @*  <td>
-            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>*@
+                }
             </tr>
         }
     </tbody>

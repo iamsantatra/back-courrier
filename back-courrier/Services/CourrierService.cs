@@ -17,7 +17,7 @@ namespace back_courrier.Services
             _configuration = configuration;
         }
 
-        public Courrier creationCourrier(Courrier courrier, Utilisateur employe, 
+        public Courrier CreationCourrier(Courrier courrier, Utilisateur employe, 
             List<Departement> SelectedDestinataires, IFormFile formFile)
         {
             Statut statusCreer = _context.Statut.Where(s => s.Code == "REC").First();
@@ -43,39 +43,34 @@ namespace back_courrier.Services
                     .Include(h => h.CourrierDestinataire)
                         .ThenInclude(cd => cd.Courrier)
                             .ThenInclude(c => c.ExpediteurInterne)
-                     .Include(h => h.CourrierDestinataire)
+                    .Include(h => h.CourrierDestinataire)
                         .ThenInclude(cd => cd.Courrier)
                             .ThenInclude(c => c.Recepteur)
-                     .Include(h => h.CourrierDestinataire)
+                    .Include(h => h.CourrierDestinataire)
                         .ThenInclude(cd => cd.Departement)
-                            .ThenInclude(c => c.ExpediteurInterne)
-                    .Include(h => h.Statut)
-                        .ThenInclude(c => c.Recepteur)
-                    .Include(h => h.Utilisateur)
-                        .ThenInclude(c => c.Recepteur)
-                    .Include(cd => cd.Departement)
+                    .Include(h => h.Statut);
         }
 
-        public IList<Historique> listeCourrierCoursier(Utilisateur employe)
+        public IList<Historique> ListeCourrierCoursier(Utilisateur employe)
         {
             throw new NotImplementedException();
         }
 
-        public IList<Historique> listeCourrierReceptionniste()
+        public IList<Historique> ListeCourrierReceptionniste()
         {
             return ListeCourrierBaseQuery().ToList();
         }
 
-        public IList<Historique> listeCourrierSecDir(Utilisateur employe)
+        public IList<Historique> ListeCourrierSecDir(Utilisateur employe)
         {
             throw new NotImplementedException();
         }
 
-        public IList<Historique> listeCourrier(Utilisateur employe)
+        public IList<Historique> ListeCourrier(Utilisateur employe)
         {
             if (employe.Poste.Code == _configuration["Constants:Role:RecRole"])
             {
-                return listeCourrierReceptionniste();
+                return ListeCourrierReceptionniste();
             }/*
             if (employe.Poste.code == _configuration["Constants:Role:CouRole"])
             {

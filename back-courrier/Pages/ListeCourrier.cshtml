@@ -2,12 +2,12 @@
 @model back_courrier.Pages.ListeCourrierModel
 @addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-    ViewData["Title"] = "ListeCourrier";
+    ViewData["Title"] = "Liste des courrier";
 }
 
 <div class="row">
     <div class="col-md-9">
-        <h1>ListeCourrier</h1>
+        <h1>Liste des courrier</h1>
     </div>
         @if (User.IsInRole(ViewData["RecRole"].ToString()))
     {
@@ -188,6 +188,9 @@
             <th>
                 Status
             </th>
+            <th>
+                Responsable
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -242,6 +245,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Statut.Designation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Utilisateur.Nom)
                 </td>
             </tr>
         }

@@ -69,6 +69,7 @@ namespace back_courrier.Services
                 .Include(h => h.CourrierDestinataire)
                     .ThenInclude(cd => cd.Departement)
                 .Include(h => h.Statut)
+                .Include(h => h.Utilisateur)
                 .Where(h => subquery.Contains(h.Id))
                 .OrderByDescending(h => h.Id);
 

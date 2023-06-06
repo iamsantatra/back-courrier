@@ -48,5 +48,27 @@ namespace back_courrier.Pages
             ModelState.AddModelError(string.Empty, "Nom d'utilisateur ou mot de passe incorrect");
             return Page();
         }
+
+        public async Task<IActionResult> OnGetLogout()
+        {
+            var claimsToRemove = User.Claims.ToList();
+            foreach (var claim in claimsToRemove)
+            {
+                ((ClaimsIdentity)User.Identity).RemoveClaim(claim);
+            }
+            // Delete the authentication cookie
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            // Redirect to the login page or any other desired page
+            return RedirectToPage("/Index");
+        }
+
+        public IActionResult OnGet()
+        {
+            if(User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/ListeCourrier");
+            }
+            return Page();
+        }
     }
 }

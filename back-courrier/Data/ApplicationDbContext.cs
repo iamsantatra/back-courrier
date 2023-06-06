@@ -16,8 +16,6 @@ namespace back_courrier.Data
         public DbSet<Courrier> Courrier { get; set; }
         public DbSet<CourrierDestinataire> CourrierDestinataire { get; set; }
         public DbSet<Historique> Historique { get; set; }
-        public DbSet<VueListeCourrier> VueListeCourrier { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();

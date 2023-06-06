@@ -7,14 +7,14 @@ namespace back_courrier.Models
     {
         [ForeignKey("CourrierDestinataire")]
         public int IdCourrierDestinataire { get; set; }
-        public CourrierDestinataire CourrierDestinataire { get; set; }
+        public CourrierDestinataire? CourrierDestinataire { get; set; }
         [ForeignKey("Statut")]
         public int IdStatut { get; set; }
-        public Statut Statut { get; set; }
-        public DateTime DateHistorique { get; set; } = DateTime.Now;
+        public Statut? Statut { get; set; }
+        public DateTime? DateHistorique { get; set; } = DateTime.Now;
         [ForeignKey("Utilisateur")]
         public int IdResponsable { get; set; }
-        public Utilisateur Utilisateur { get; set; } 
+        public Utilisateur? Utilisateur { get; set; } 
 
         public Historique() { }
         public Historique(CourrierDestinataire courrierDestinataire, Statut statut, Utilisateur utilisateur)

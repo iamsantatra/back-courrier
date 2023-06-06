@@ -6,17 +6,14 @@ namespace back_courrier.Models
 {
     public class Utilisateur : BaseModel
     {
-        [Required]
-        public string Nom { get; set; }
-        [Required]
+        public string? Nom { get; set; }
         public string Pseudo { get; set; }
-        [Required]
         public string MotDePasse { get; set; }
         [ForeignKey("Poste")]
         public int IdPoste { get; set; }
-        public Poste Poste { get; set; } = default!;
+        public Poste? Poste { get; set; } = default!;
         [ForeignKey("Departement")]
         public int IdDepartement { get; set; }
-        public Departement Departement { get; set; } = default!;
+        public Departement? Departement { get; set; } = default!;
     }
 }

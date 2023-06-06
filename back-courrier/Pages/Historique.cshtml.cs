@@ -5,58 +5,75 @@ using back_courrier.Models;
 using back_courrier.Helper;
 using back_courrier.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
+using System.Net.NetworkInformation;
 
 namespace back_courrier.Pages
 {
     public class HistoriqueModel : PageModel
     {
-        private readonly back_courrier.Data.ApplicationDbContext _context;
-
-        public HistoriqueModel(back_courrier.Data.ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        private readonly ICourrierService _courrierService;
+        private readonly IUtilisateurService _employeService;
+        public List<Utilisateur> Prochain;
+        private Utilisateur _currentUser;
+        [BindProperty]
+        public Historique Historique { get; set; } = default!;
+        public HistoriqueModel(ApplicationDbContext context, ICourrierService courrierService,
+            IUtilisateurService employeService, IConfiguration configuration)
         {
             _context = context;
+            this._courrierService = courrierService;
+            this._employeService = employeService;
         }
-        public List<Utilisateur> Prochain { get; set; } = default!;
+
         public async Task<IActionResult> OnGetAsync(int id, int idDepartement, int idStatut)
         {
-            if (id == null || _context.VueListeCourrier == null)
-            {
-                return NotFound();
-            }
             try
             {
-                Utilisateur UtilisateurConn = HttpContext.Session.GetObject<Utilisateur>("utilisateur");
-                Prochain = TransfertService.GetProchainUtilisateur(_context, UtilisateurConn, idDepartement, idStatut);
-                Historique historique = await _context.Historique.Where(h => h.IdCourrierDestinataire == id).OrderByDescending(h => h.DateHistorique).FirstOrDefaultAsync();
-                if (historique == null)
+                _currentUser = _employeService.GetUtilisateurByClaim(User);
+                _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
+                Prochain = _employeService.GetUtilisateurSuivant(_currentUser, idDepartement, idStatut);
+                if(Prochain != null) { 
+                    ViewData["Prochain"] = new SelectList(Prochain, "Id", "Nom");
+                }
+                Historique = _courrierService.GetHistoriqueByIdCourrierDestinataire(id);
+                if (Historique == null)
                 {
                     return NotFound();
                 }
-                Historique = historique;
             }
             catch (Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return Page();
             }
             return Page();
         }
-        [BindProperty]
-        public Historique Historique { get; set; } = default!;
-        
+
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id, int idDepartement, int idStatut)
         {
             if (!ModelState.IsValid || _context.Historique == null || Historique == null)
             {
+                await OnGetAsync(id, idDepartement, idStatut);
                 return Page();
             }
-            Historique.IdStatut = Historique.IdStatut + 1;
-            _context.Historique.Add(Historique);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _courrierService.TransfertCourrier(Historique);
+                await _context.SaveChangesAsync();
 
-            return RedirectToPage("./ListeCourrier");
+                return RedirectToPage("./ListeCourrier");
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError(string.Empty, e.Message);
+                await OnGetAsync(id, idDepartement, idStatut);
+                return Page();
+            }
         }
     }
 }

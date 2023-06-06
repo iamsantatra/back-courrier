@@ -9,6 +9,6 @@ namespace back_courrier.Services
         public Utilisateur GetUtilisateurByClaim(ClaimsPrincipal currentUser);
         public List<Utilisateur> GetUtilisateurByRole(string posteCode);
         public List<Utilisateur> GetUtilisateurByRoleAndDepartement(string posteCode, string departement); 
-        public List<Utilisateur> GetUtilisateurSuivant(Utilisateur UtilisateurCourant, int IdDepartement, int IdStatut));
+        public List<Utilisateur> GetUtilisateurSuivant(Utilisateur UtilisateurCourant, int IdDepartement, int IdStatut);
     }
 }

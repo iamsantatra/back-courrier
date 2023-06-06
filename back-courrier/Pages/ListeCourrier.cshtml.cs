@@ -23,7 +23,8 @@ namespace back_courrier.Pages
         private readonly IUtilisateurService _employeService;
         private readonly IConfiguration _configuration;
         private Utilisateur _currentUser;
-        public IList<Historique> listeCourrier { get; set; } = default!;
+        public IList<Historique> listeCourrier { get; set; }
+        public IList<Utilisateur> listeCoursier { get; set; }
         public int _pageNumber { get; set; } = 1;
         public int _totalPages { get; set; }
         public int _pageSize { get; set; } = 10;
@@ -37,6 +38,8 @@ namespace back_courrier.Pages
             ViewData["SecRole"] = secRole;
             ViewData["CourRole"] = courRole;
             ViewData["RecRole"] = recRole;
+           /* listeCoursier = _employeService.GetUtilisateurByRole(_configuration.GetValue<string>("Constants:Role:CourRole"));
+            ViewData["Coursiers"] = new SelectList(listeCoursier, "Id", "Nom");*/
 
             if (_context.Courrier != null)
             {

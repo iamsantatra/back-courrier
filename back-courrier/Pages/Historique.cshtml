@@ -2,60 +2,125 @@
 @model back_courrier.Pages.HistoriqueModel
 
 @{
-    ViewData["Title"] = "Historique";
+    ViewData["Title"] = "Transférer courrier";
 }
 
-<h1>Historique</h1>
+<h1>Transférer courrier</h1>
 
-<h4>Historique</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-6">
+@*            @if (ViewData.ModelState.Any())
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <span>@error.ErrorMessage</span>
+
+                        <br />
+                    }
+                </div>
+            }*@
             <div class="form-group">
                 <label asp-for="Historique.IdCourrierDestinataire" class="control-label"></label>
-                <input asp-for="Historique.IdCourrierDestinataire" value = "@Model.Historique.IdCourrierDestinataire" class="form-control" />
+                <input asp-for="Historique.IdCourrierDestinataire" value = "@Model.Historique.IdCourrierDestinataire" class="form-control" disabled/>
                 <span asp-validation-for="Historique.IdCourrierDestinataire" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Historique.IdStatut" class="control-label"></label>
-                <input asp-for="Historique.IdStatut" value="@Model.Historique.IdStatut" class="form-control" />
-                <span asp-validation-for="Historique.IdStatut" class="text-danger"></span>
+                <label asp-for="Historique.CourrierDestinataire.Courrier.Objet" class="control-label"></label>
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Objet" value="@Model.Historique.CourrierDestinataire.Courrier.Objet" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Objet" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Historique.DateHistorique" class="control-label"></label>
-                <input asp-for="Historique.DateHistorique" class="form-control" />
-                <span asp-validation-for="Historique.DateHistorique" class="text-danger"></span>
+                <label asp-for="Historique.CourrierDestinataire.Courrier.Reference" class="control-label"></label>
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Reference" value="@Model.Historique.CourrierDestinataire.Courrier.Reference" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Reference" class="text-danger"></span>
             </div>
             <div class="form-group">
-                    <label class="control-label">Responsable</label>
-                    @if (Model.Prochain != null && Model.Prochain.Any())
-                    {
-                        <select asp-for="Historique.IdResponsable" class="form-control">
-                            @foreach (var destinataire in Model.Prochain)
+                <label asp-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="control-label"></label>
+                <texarea asp-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="form-control" disabled>
+                    @Model.Historique.CourrierDestinataire.Courrier.Commentaire
+                </textarea>
+                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Pièce Jointe</label>
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Fichier" value="@Model.Historique.CourrierDestinataire.Courrier.Fichier" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Fichier" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Date création</label>
+                <input asp-for="Historique.CourrierDestinataire.Courrier.DateCreation" value="@Model.Historique.CourrierDestinataire.Courrier.DateCreation.ToString("yyyy-MM-dd HH:mm:ss")" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.DateCreation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Expéditeur</label>
+                @if (Model.Historique.CourrierDestinataire.Courrier.ExpediteurInterne != null)
+                {
+                    <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" value="@Model.Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="form-control" disabled />
+                    <span asp-validation-for="Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="text-danger"></span>
+                } else
+                {
+                    <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurExterne" value="@Model.Historique.CourrierDestinataire.Courrier.ExpediteurExterne" class="form-control" disabled />
+                    <span asp-validation-for="Historique.CourrierDestinataire.Courrier.ExpediteurExterne" class="text-danger"></span>
+                }
+            </div>
+            <div class="form-group">
+                <label class="control-label">Recepteur</label>
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" value="@Model.Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Flag</label>
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Flag" value="@Model.Historique.CourrierDestinataire.Courrier.Flag" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Flag" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Département cible</label>
+                <input asp-for="Historique.CourrierDestinataire.Departement.Designation" value="@Model.Historique.CourrierDestinataire.Departement.Designation" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Departement.Designation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Statut</label>
+                <input asp-for="Historique.Statut.Designation" value="@Model.Historique.Statut.Designation" class="form-control" disabled />
+                <span asp-validation-for="Historique.Statut.Designation" class="text-danger"></span>
+            </div>
+           
+            
+                @if (Model.Prochain != null && Model.Prochain.Any())
+                {
+                    <form method="post">
+                        <div class="form-group">
+                            <label class="control-label">Responsable</label>
+                            @if (Model.Prochain != null && Model.Prochain.Any())
                             {
-                                <option value="@destinataire.Id">@destinataire.Nom</option>
+                                <select asp-for="Historique.IdResponsable" class="form-control" asp-items="ViewBag.Prochain"></select>
+                                <span asp-validation -for="Historique.IdResponsable" class="text-danger"></span>
                             }
-                        </select>
-                    }
-                    else
-                    {
-                        <p>En attente...</p>
-                    }
-            </div>
-            @if (Model.Prochain != null && Model.Prochain.Any())
-            {
-                <div class="form-group mt-3">
-                    <input type="submit" value="Transferer" class="btn btn-primary" />
-                </div>
-            }
-        </form>
+                            else
+                            {
+                                <p>En attente...</p>
+                            }
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Date historique</label>
+                            <input asp-for="Historique.DateHistorique" class="form-control" />
+                            <span asp-validation-for="Historique.DateHistorique" class="text-danger"></span>
+                        </div>
+                        <input type="hidden" asp-for="Historique.Id" />
+                        <input type="hidden" asp-for="Historique.IdStatut" />
+                        <input type="hidden" asp-for="Historique.IdCourrierDestinataire" />
+                        <div class="form-group mt-3">
+                            <input type="submit" value="Transferer" class="btn btn-primary" />
+                        </div>
+                    </form>
+                }
+            
     </div>
 </div>
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a asp-page="Index">Liste courrier</a>
 </div>
 
 @section Scripts {

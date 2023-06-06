@@ -9,18 +9,18 @@
     <div class="col-md-9">
         <h1>ListeCourrier</h1>
     </div>
+        @if (User.IsInRole(ViewData["RecRole"].ToString()))
+    {
+        <div class="col-md-2">
+            <a class="btn btn-primary" href="CreationCourrier">Ajouter courrier</a>
+        </div>
+    }
     <div class="col-md-1">
         <form method="post">
             <input type="hidden" name="GridHtml" />
             <input type="submit" class="btn btn-success" id="btnSubmit" value="Exporter" asp-page-handler="Export" />
         </form>
     </div>
-    @if (User.IsInRole(ViewData["RecRole"].ToString()))
-    {
-        <div class="col-md-2">
-            <a class="btn btn-primary" href="CreationCourrier">Ajouter courrier</a>
-        </div>
-    }
 </div>
 @*<div>
     <form method="post" asp-page-handler="Search">
@@ -156,6 +156,9 @@
     <thead>
         <tr>
             <th>
+                #
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Objet)
             </th>
             <th>
@@ -185,18 +188,17 @@
             <th>
                 Status
             </th>
-            @if (!User.IsInRole(ViewData["DirRole"].ToString()))
-            {
-                <th>
-                    Transférer
-                </th>
-            }
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.listeCourrier)
         {
             <tr>
+                <td>
+                    <a href="@Url.Page("Historique", new { id = item.IdCourrierDestinataire, idDepartement = item.CourrierDestinataire.IdDepartementDestinataire, idStatut = item.IdStatut })">
+                        @Html.DisplayFor(modelItem => item.IdCourrierDestinataire)
+                    </a>
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Objet)
                 </td>
@@ -241,39 +243,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Statut.Designation)
                 </td>
-
-                @if (User.IsInRole(ViewData["CouRole"].ToString()))
-                {
-                    <td>
-                        <a asp-page="Liste" asp-page-handler="Transferer"
-                   asp-route-courrier="@item.IdCourrier" asp-route-destinataire="@item.IdDestinataire"
-                   asp-route-role="@ViewData["DirRole"]" class="transfer-button">
-                            Directeur
-                        </a>
-
-                        <a asp-page="Liste" asp-page-handler="Transferer"
-                   asp-route-courrier="@item.IdCourrier" asp-route-destinataire="@item.IdDestinataire"
-                   asp-route-role="@ViewData["SecRole"]" class="transfer-button">
-                            Secrétaire
-                        </a>
-                    </td>
-                }
-                else
-                {
-                    <td class="coursier-name">
-                        @if (item.IdCoursier == null)
-                        {
-                            <a asp-page="Assigner" asp-route-courrier="@item.IdCourrier"
-                   asp-route-destinataire="@item.IdDestinataire" class="assign-button">
-                                Assigner
-                            </a>
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.Coursier.Nom)
-                        }
-                    </td>
-                }
             </tr>
         }
     </tbody>

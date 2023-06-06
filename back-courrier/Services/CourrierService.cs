@@ -151,12 +151,6 @@ namespace back_courrier.Services
             _context.Historique.Add(hResultat);
             return hResultat;
         }
-
-        public int CalculateTotalPages(IList<Historique> listeCourrier, int pageSize)
-        {
-            int totalRecords = listeCourrier.Count();
-            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-            return totalPages;
-        }
+        
     }
 }

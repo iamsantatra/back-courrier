@@ -1,11 +1,6 @@
 using back_courrier.Data;
 using back_courrier.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
-using iText.Html2pdf;
-using iText.IO.Source;
-using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Mvc;
 using iText.Kernel.Geom;
 using System.Drawing.Printing;
@@ -24,6 +19,7 @@ namespace back_courrier.Pages
         private readonly IConfiguration _configuration;
         private Utilisateur _currentUser;
         public IList<Historique> listeCourrier { get; set; }
+        public IList<Historique> listeCourrierSansPag { get; set; }
         /*public IList<Utilisateur> listeCoursier { get; set; }*/
         public int _pageNumber { get; set; } = 1;
         public int _totalPages { get; set; }
@@ -47,8 +43,8 @@ namespace back_courrier.Pages
                 _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
                 _pageNumber = pageNumber;
                 listeCourrier = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, true);
-                IList<Historique> listeCourrierSansPag = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, false);
-                _totalPages = _courrierService.CalculateTotalPages(listeCourrierSansPag, _pageSize);
+                listeCourrierSansPag = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, false);
+                _totalPages = back_courrier.Helper.Helper.CalculateTotalPage(listeCourrierSansPag.ToList(), _pageSize);
             }
         }
 /*

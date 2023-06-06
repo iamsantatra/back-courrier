@@ -30,23 +30,16 @@ namespace back_courrier.Pages
 
         public async Task<IActionResult> OnGetAsync(int id, int idDepartement, int idStatut)
         {
-            try
-            {
-                _currentUser = _employeService.GetUtilisateurByClaim(User);
-                _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
-                Prochain = _employeService.GetUtilisateurSuivant(_currentUser, idDepartement, idStatut);
-                if(Prochain != null) { 
-                    ViewData["Prochain"] = new SelectList(Prochain, "Id", "Nom");
-                }
-                Historique = _courrierService.GetHistoriqueByIdCourrierDestinataire(id);
-                if (Historique == null)
-                {
-                    return NotFound();
-                }
+            _currentUser = _employeService.GetUtilisateurByClaim(User);
+            _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
+            Prochain = _employeService.GetUtilisateurSuivant(_currentUser, idDepartement, idStatut);
+            if(Prochain != null) { 
+                ViewData["Prochain"] = new SelectList(Prochain, "Id", "Nom");
             }
-            catch (Exception e)
+            Historique = _courrierService.GetHistoriqueByIdCourrierDestinataire(id);
+            if (Historique == null)
             {
-                ModelState.AddModelError(string.Empty, e.Message);
+                return RedirectToPage("./ListeCourrier");
             }
             return Page();
         }

@@ -39,38 +39,73 @@ namespace back_courrier.Services
 
         public IQueryable<Historique> ListeCourrierBaseQuery()
         {
-            return _context.Historique
-                    .Include(h => h.CourrierDestinataire)
-                        .ThenInclude(cd => cd.Courrier)
-                            .ThenInclude(c => c.ExpediteurInterne)
-                    .Include(h => h.CourrierDestinataire)
-                        .ThenInclude(cd => cd.Courrier)
-                            .ThenInclude(c => c.Recepteur)
-                    .Include(h => h.CourrierDestinataire)
-                        .ThenInclude(cd => cd.Departement)
-                    .Include(h => h.Statut)
-                    .OrderByDescending(h => h.Id);
-/*                    .GroupBy(h => h.CourrierDestinataire.Id)
-                    .Select(g => g.OrderByDescending(h => h.Id).FirstOrDefault());*/
+            /*            var query = _context.Historique
+                                .Include(h => h.CourrierDestinataire)
+                                    .ThenInclude(cd => cd.Courrier)
+                                        .ThenInclude(c => c.ExpediteurInterne)
+                                .Include(h => h.CourrierDestinataire)
+                                    .ThenInclude(cd => cd.Courrier)
+                                        .ThenInclude(c => c.Recepteur)
+                                .Include(h => h.CourrierDestinataire)
+                                    .ThenInclude(cd => cd.Departement)
+                                .Include(h => h.Statut)
+                                .OrderByDescending(h => h.Id);
+                        *//*                    .GroupBy(h => h.IdCourrierDestinataire)
+                                            .Select(g => g.OrderByDescending(h => h.Id).FirstOrDefault());*//*
+                        return query;*/
+
+            var subquery = _context.Historique
+                .GroupBy(h => h.IdCourrierDestinataire)
+                .Select(g => g.OrderByDescending(h => h.Id).FirstOrDefault())
+                .Select(h => h.Id);
+
+            var query = _context.Historique
+                .Include(h => h.CourrierDestinataire)
+                    .ThenInclude(cd => cd.Courrier)
+                        .ThenInclude(c => c.ExpediteurInterne)
+                .Include(h => h.CourrierDestinataire)
+                    .ThenInclude(cd => cd.Courrier)
+                        .ThenInclude(c => c.Recepteur)
+                .Include(h => h.CourrierDestinataire)
+                    .ThenInclude(cd => cd.Departement)
+                .Include(h => h.Statut)
+                .Where(h => subquery.Contains(h.Id))
+                .OrderByDescending(h => h.Id);
+
+            return query;
         }
 
-        public IList<Historique> ListeCourrierCoursier()
+        public IList<Historique> ListeCourrierCoursier(Utilisateur employe)
         {
-            return ListeCourrierBaseQuery()
-                .Where(h => h.Statut.Code == _configuration["Constants:Statut:TransCour"])
+            var query = ListeCourrierBaseQuery()
+                .Where(h => h.IdResponsable == employe.Id
+                && h.Statut.Code == _configuration["Constants:Statut:TransCour"])
                 .ToList();
+
+            return query;
         }
 
         public IList<Historique> ListeCourrierReceptionniste()
         {
             return ListeCourrierBaseQuery()
-                .Where(h => h.Statut.Code == _configuration["Constants:Statut:Recu"])
+               /* .Where(h => h.Statut.Code == _configuration["Constants:Statut:TransSec"])*/
                 .ToList();
         }
 
-        public IList<Historique> ListeCourrierSecDir(Utilisateur employe)
+        public IList<Historique> ListeCourrierSec(Utilisateur employe)
         {
-            throw new NotImplementedException();
+            return ListeCourrierBaseQuery()
+                .Where(h => h.CourrierDestinataire.IdDepartementDestinataire == employe.IdDepartement
+                && h.Statut.Code == _configuration["Constants:Statut:TransSec"])
+                .ToList();
+        }
+
+        public IList<Historique> ListeCourrierDir(Utilisateur employe)
+        {
+            return ListeCourrierBaseQuery()
+                .Where(h => h.CourrierDestinataire.IdDepartementDestinataire == employe.IdDepartement
+                && h.Statut.Code == _configuration["Constants:Statut:Livre"])
+                .ToList();
         }
 
         public IList<Historique> ListeCourrier(Utilisateur employe)
@@ -81,18 +116,35 @@ namespace back_courrier.Services
             }
             if (employe.Poste.Code == _configuration["Constants:Role:CourRole"])
             {
-                return ListeCourrierCoursier();
+                return ListeCourrierCoursier(employe);
             }
-            /*if ((employe.Poste.code == _configuration["Constants:Role:SecRole"]) || (employe.Poste.code == _configuration["Constants:Role:DirRole"]))
+            if (employe.Poste.Code == _configuration["Constants:Role:SecRole"])
             {
-                return listeCourrierSecDir(employe);
-            }*/
+                return ListeCourrierSec(employe);
+            }
+            if (employe.Poste.Code == _configuration["Constants:Role:DirRole"])
+            {
+                return ListeCourrierDir(employe);
+            }
             return null;
         }
 
         public Historique GetHistoriqueByIdCourrierDestinataire(int IdCourrierDestinataire)
         {
-            return ListeCourrierBaseQuery().FirstOrDefault(h => h.CourrierDestinataire.Id == IdCourrierDestinataire);
+            /*Historique detailsHistorique = ListeCourrierBaseQuery().First(h => h.IdCourrierDestinataire == IdCourrierDestinataire);*/
+            Historique detailsHistorique = _context.Historique
+                .Include(h => h.CourrierDestinataire)
+                .Include(h => h.Statut)
+                .Include(h => h.CourrierDestinataire)
+                    .ThenInclude(cd => cd.Courrier)
+                .Include(h => h.CourrierDestinataire)
+                    .ThenInclude(cd => cd.Departement)
+                .Include(h => h.CourrierDestinataire)
+                        .ThenInclude(cd => cd.Courrier)
+                            .ThenInclude(c => c.Recepteur)
+                .Where(h => h.IdCourrierDestinataire == IdCourrierDestinataire)
+                .First();
+            return detailsHistorique;
         }
         public Historique TransfertCourrier(Historique historique)
         {

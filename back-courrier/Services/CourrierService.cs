@@ -1,6 +1,8 @@
 ﻿using back_courrier.Models;
 using Microsoft.EntityFrameworkCore;
 using back_courrier.Data;
+using iText.Kernel.Geom;
+using System.Drawing.Printing;
 
 namespace back_courrier.Services
 {
@@ -37,23 +39,8 @@ namespace back_courrier.Services
             return courrier;
         }
 
-        public IQueryable<Historique> ListeCourrierBaseQuery()
+        public IQueryable<Historique> ListeCourrierBaseQuery(int pageNumber, int pageSize, Boolean pagination)
         {
-            /*            var query = _context.Historique
-                                .Include(h => h.CourrierDestinataire)
-                                    .ThenInclude(cd => cd.Courrier)
-                                        .ThenInclude(c => c.ExpediteurInterne)
-                                .Include(h => h.CourrierDestinataire)
-                                    .ThenInclude(cd => cd.Courrier)
-                                        .ThenInclude(c => c.Recepteur)
-                                .Include(h => h.CourrierDestinataire)
-                                    .ThenInclude(cd => cd.Departement)
-                                .Include(h => h.Statut)
-                                .OrderByDescending(h => h.Id);
-                        *//*                    .GroupBy(h => h.IdCourrierDestinataire)
-                                            .Select(g => g.OrderByDescending(h => h.Id).FirstOrDefault());*//*
-                        return query;*/
-
             var subquery = _context.Historique
                 .GroupBy(h => h.IdCourrierDestinataire)
                 .Select(g => g.OrderByDescending(h => h.Id).FirstOrDefault())
@@ -71,14 +58,22 @@ namespace back_courrier.Services
                 .Include(h => h.Statut)
                 .Include(h => h.Utilisateur)
                 .Where(h => subquery.Contains(h.Id))
-                .OrderByDescending(h => h.Id);
+                /*.OrderByDescending(h => h.Id)*/;
+                /*.Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);*/
 
-            return query;
+            if(pagination)
+            {
+                query = query.Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+            }
+
+            return query.OrderByDescending(h => h.Id);
         }
 
-        public IList<Historique> ListeCourrierCoursier(Utilisateur employe)
+        public IList<Historique> ListeCourrierCoursier(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
-            var query = ListeCourrierBaseQuery()
+            var query = ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
                 .Where(h => h.IdResponsable == employe.Id
                 && h.Statut.Code == _configuration["Constants:Statut:TransCour"])
                 .ToList();
@@ -86,46 +81,46 @@ namespace back_courrier.Services
             return query;
         }
 
-        public IList<Historique> ListeCourrierReceptionniste()
+        public IList<Historique> ListeCourrierReceptionniste(int pageNumber, int pageSize, Boolean pagination)
         {
-            return ListeCourrierBaseQuery()
-               /* .Where(h => h.Statut.Code == _configuration["Constants:Statut:TransSec"])*/
+            return ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
+                /* .Where(h => h.Statut.Code == _configuration["Constants:Statut:TransSec"])*/
                 .ToList();
         }
 
-        public IList<Historique> ListeCourrierSec(Utilisateur employe)
+        public IList<Historique> ListeCourrierSec(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
-            return ListeCourrierBaseQuery()
+            return ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
                 .Where(h => h.CourrierDestinataire.IdDepartementDestinataire == employe.IdDepartement
                 && h.Statut.Code == _configuration["Constants:Statut:TransSec"])
                 .ToList();
         }
 
-        public IList<Historique> ListeCourrierDir(Utilisateur employe)
+        public IList<Historique> ListeCourrierDir(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
-            return ListeCourrierBaseQuery()
+            return ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
                 .Where(h => h.CourrierDestinataire.IdDepartementDestinataire == employe.IdDepartement
                 && h.Statut.Code == _configuration["Constants:Statut:Livre"])
                 .ToList();
         }
 
-        public IList<Historique> ListeCourrier(Utilisateur employe)
+        public IList<Historique> ListeCourrier(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             if (employe.Poste.Code == _configuration["Constants:Role:RecRole"])
             {
-                return ListeCourrierReceptionniste();
+                return ListeCourrierReceptionniste(pageNumber, pageSize, pagination);
             }
             if (employe.Poste.Code == _configuration["Constants:Role:CourRole"])
             {
-                return ListeCourrierCoursier(employe);
+                return ListeCourrierCoursier(employe, pageNumber, pageSize, pagination);
             }
             if (employe.Poste.Code == _configuration["Constants:Role:SecRole"])
             {
-                return ListeCourrierSec(employe);
+                return ListeCourrierSec(employe, pageNumber, pageSize, pagination);
             }
             if (employe.Poste.Code == _configuration["Constants:Role:DirRole"])
             {
-                return ListeCourrierDir(employe);
+                return ListeCourrierDir(employe, pageNumber, pageSize, pagination);
             }
             return null;
         }
@@ -155,6 +150,13 @@ namespace back_courrier.Services
             hResultat.IdResponsable = historique.IdResponsable;
             _context.Historique.Add(hResultat);
             return hResultat;
+        }
+
+        public int CalculateTotalPages(IList<Historique> listeCourrier, int pageSize)
+        {
+            int totalRecords = listeCourrier.Count();
+            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            return totalPages;
         }
     }
 }

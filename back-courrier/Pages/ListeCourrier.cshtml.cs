@@ -24,11 +24,11 @@ namespace back_courrier.Pages
         private readonly IConfiguration _configuration;
         private Utilisateur _currentUser;
         public IList<Historique> listeCourrier { get; set; }
-        public IList<Utilisateur> listeCoursier { get; set; }
+        /*public IList<Utilisateur> listeCoursier { get; set; }*/
         public int _pageNumber { get; set; } = 1;
         public int _totalPages { get; set; }
         public int _pageSize { get; set; } = 10;
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int pageNumber = 1)
         {
             string dirRole = _configuration.GetValue<string>("Constants:Role:DirRole");
             string secRole = _configuration.GetValue<string>("Constants:Role:SecRole");
@@ -45,7 +45,10 @@ namespace back_courrier.Pages
             {
                 _currentUser = _employeService.GetUtilisateurByClaim(User);
                 _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
-                listeCourrier = _courrierService.ListeCourrier(_currentUser);
+                _pageNumber = pageNumber;
+                listeCourrier = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, true);
+                IList<Historique> listeCourrierSansPag = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, false);
+                _totalPages = _courrierService.CalculateTotalPages(listeCourrierSansPag, _pageSize);
             }
         }
 /*

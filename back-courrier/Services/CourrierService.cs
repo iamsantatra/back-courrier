@@ -1,8 +1,10 @@
 ﻿using back_courrier.Models;
 using Microsoft.EntityFrameworkCore;
 using back_courrier.Data;
-using iText.Kernel.Geom;
-using System.Drawing.Printing;
+using System.IO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using static iTextSharp.text.pdf.AcroFields;
 
 namespace back_courrier.Services
 {
@@ -66,6 +68,7 @@ namespace back_courrier.Services
             {
                 query = query.Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize);
+                /*query = back_courrier.Helper.Helper.Paginate(query, pageNumber, pageSize);*/
             }
 
             return query.OrderByDescending(h => h.Id);
@@ -151,6 +154,87 @@ namespace back_courrier.Services
             _context.Historique.Add(hResultat);
             return hResultat;
         }
-        
+
+        public byte[] ExportPDF(IList<Historique> historiques)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                Document document = new Document(PageSize.A4.Rotate()); // Set the page size to landscape
+
+                PdfWriter writer = PdfWriter.GetInstance(document, stream);
+                document.Open();
+
+                // Create the table and set its properties
+                PdfPTable table = new PdfPTable(10); // Adjust the number of columns as needed
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 0.5f, 2f,  2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f }); // Adjust the column widths as needed
+
+                // Add the table headers
+                PdfPCell headerCell1 = new PdfPCell(new Phrase("ID", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                PdfPCell headerCell2 = new PdfPCell(new Phrase("Objet", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                PdfPCell headerCell3 = new PdfPCell(new Phrase("Reference", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                /*PdfPCell headerCell4 = new PdfPCell(new Phrase("Commentaire", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));*/
+                PdfPCell headerCell5 = new PdfPCell(new Phrase("Date creation", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                PdfPCell headerCell6 = new PdfPCell(new Phrase("Expediteur", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                PdfPCell headerCell7 = new PdfPCell(new Phrase("Recepteur", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                PdfPCell headerCell8 = new PdfPCell(new Phrase("Flag", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                PdfPCell headerCell9 = new PdfPCell(new Phrase("Destinataire", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                PdfPCell headerCell10 = new PdfPCell(new Phrase("Status", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+                PdfPCell headerCell11 = new PdfPCell(new Phrase("Responsable", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+
+                table.AddCell(headerCell1);
+                table.AddCell(headerCell2);
+                table.AddCell(headerCell3);
+                /*table.AddCell(headerCell4);*/
+                table.AddCell(headerCell5);
+                table.AddCell(headerCell6);
+                table.AddCell(headerCell7);
+                table.AddCell(headerCell8);
+                table.AddCell(headerCell9);
+                table.AddCell(headerCell10);
+                table.AddCell(headerCell11);
+
+                // Add the historique data to the table
+                foreach (var historique in historiques)
+                {
+                    PdfPCell cell1 = new PdfPCell(new Phrase(historique.Id.ToString()));
+                    PdfPCell cell2 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Objet));
+                    PdfPCell cell3 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Reference));
+                    /*PdfPCell cell4 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Commentaire));*/
+                    PdfPCell cell5 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.DateCreation.ToString()));
+                    PdfPCell cell6 = null;
+                    if (historique.CourrierDestinataire.Courrier.ExpediteurInterne != null)
+                    {
+                        cell6 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation));
+                    }
+                    else 
+                    { 
+                        cell6 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.ExpediteurExterne));
+                    }
+                    PdfPCell cell7 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Recepteur.Nom));
+                    PdfPCell cell8 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Flag));
+                    PdfPCell cell9 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Departement.Designation));
+                    PdfPCell cell10 = new PdfPCell(new Phrase(historique.Statut.Designation));
+                    PdfPCell cell11 = new PdfPCell(new Phrase(historique.Utilisateur.Nom));
+                    table.AddCell(cell1);
+                    table.AddCell(cell2);
+                    table.AddCell(cell3);
+                    /*table.AddCell(cell4);*/
+                    table.AddCell(cell5);
+                    table.AddCell(cell6);
+                    table.AddCell(cell7);
+                    table.AddCell(cell8);
+                    table.AddCell(cell9);
+                    table.AddCell(cell10);
+                    table.AddCell(cell11);
+                }
+
+                // Add the table to the document
+                document.Add(table);
+
+                document.Close();
+                return stream.ToArray();
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Drawing.Printing;
 using back_courrier.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using back_courrier.Utils;
 
 namespace back_courrier.Pages
 {
@@ -44,7 +45,7 @@ namespace back_courrier.Pages
                 _pageNumber = pageNumber;
                 listeCourrier = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, true);
                 listeCourrierSansPag = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, false);
-                _totalPages = back_courrier.Helper.Helper.CalculateTotalPage(listeCourrierSansPag.ToList(), _pageSize);
+                _totalPages = Helper.CalculateTotalPage(listeCourrierSansPag.ToList(), _pageSize);
             }
         }
 /*
@@ -64,6 +65,40 @@ namespace back_courrier.Pages
             _employeService = employeService;
             _configuration = configuration;
         }
+
+        public async Task<IActionResult> OnGetExport(int pageNumber)
+        {
+            // exportation PDF HTML
+            /*// Call the ExportPDF function to generate the PDF content
+            byte[][] pdfContent = Helper.ExportPdfHtml(GridHtml);
+
+            // Generate a unique file name
+            string fileName = "liste-courrier-"+ DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
+
+            // Set the content type of the file
+            string contentType = "application/pdf";
+
+            // Return the file using the File constructor
+            return new FileContentResult(pdfContent[0], contentType)
+            {
+                FileDownloadName = fileName
+            };*/
+            // exportation PDF HTML
+
+            // Call the ExportPDF function to generate the PDF content
+            await OnGetAsync(pageNumber);
+            byte[] pdfContent = _courrierService.ExportPDF(listeCourrier);
+            // Generate a unique file name
+            string fileName = "liste-courrier-" + DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
+            // Set the content type of the file
+            string contentType = "application/pdf";
+            // Return the file using the File constructor
+            return new FileContentResult(pdfContent, contentType)
+            {
+                FileDownloadName = fileName
+            };
+        }
+
 
         /*public void GetListCourrierModel(int pageNumber, int pageSize)
         {

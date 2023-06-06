@@ -13,6 +13,7 @@ namespace back_courrier.Services
         IList<Historique> ListeCourrier(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
         Historique GetHistoriqueByIdCourrierDestinataire(int IdCourrierDestinataire);
         Historique TransfertCourrier(Historique historique);
-/*        int CalculateTotalPages(IList<Historique> listeCourrier, int pageSize);*/
+        /*        int CalculateTotalPages(IList<Historique> listeCourrier, int pageSize);*/
+        byte[] ExportPDF(IList<Historique> historiques);
     }
 }

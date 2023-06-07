@@ -64,18 +64,18 @@ namespace back_courrier.Data
                 .HasForeignKey(cd => cd.IdStatut)
                 .OnDelete(DeleteBehavior.NoAction);
 
-/*            modelBuilder.Entity<CourrierDestinataire>()
-                .HasOne(cd => cd.Coursier)
-                .WithMany()
-                .HasForeignKey(cd => cd.IdCoursier)
-                .OnDelete(DeleteBehavior.NoAction);
+            /*            modelBuilder.Entity<CourrierDestinataire>()
+                            .HasOne(cd => cd.Coursier)
+                            .WithMany()
+                            .HasForeignKey(cd => cd.IdCoursier)
+                            .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<CourrierDestinataire>()
-                .HasOne(cd => cd.Status)
-                .WithMany()
-                .HasForeignKey(cd => cd.IdStatus)
-                .OnDelete(DeleteBehavior.NoAction);*/
-
+                        modelBuilder.Entity<CourrierDestinataire>()
+                            .HasOne(cd => cd.Status)
+                            .WithMany()
+                            .HasForeignKey(cd => cd.IdStatus)
+                            .OnDelete(DeleteBehavior.NoAction);*/
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

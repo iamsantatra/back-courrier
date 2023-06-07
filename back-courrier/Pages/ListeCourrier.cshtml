@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="col-md-9">
-        <h1>Liste des courriers (@Model.listeCourrierSansPag.Count)</h1>
+        <h1>Liste des courriers @*(@Model.listeCourrierSansPag.Count)*@</h1>
     </div>
         @if (User.IsInRole(ViewData["RecRole"].ToString()))
     {
@@ -22,19 +22,19 @@
         </form>
     </div>
 </div>
-@*<div>
+<div>
     <form method="post" asp-page-handler="Search">
         <div class="row">
-        <div class="col-md-4">
-            <input asp-for="VueListeCourrier.Reference" class="form-control" placeholder="Reference" />
+            <div class="col-md-4">
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Reference" class="form-control" placeholder="Reference" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Objet" class="form-control" placeholder="Objet" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Flag" class="form-control" placeholder="Flag" />
+            </div>
         </div>
-        <div class="col-md-4">
-            <input asp-for="VueListeCourrier.Objet" class="form-control" placeholder="Objet" />
-        </div>
-        <div class="col-md-4">
-            <input asp-for="VueListeCourrier.Expediteur" class="form-control" placeholder="Expediteur" />
-        </div>
-    </div>
         <div class="row mt-2">
             <div class="col-md-4">
                 <input asp-for="@Model.DateCreationStart" class="form-control" placeholder="DateCreationStart" />
@@ -43,36 +43,46 @@
                 <input asp-for="@Model.DateCreationEnd" class="form-control" placeholder="DateCreationEnd" />
             </div>
             <div class="col-md-4">
-                <input asp-for="VueListeCourrier.NomStatut" class="form-control" placeholder="NomStatut" />
+                <input asp-for="Historique.Statut.Designation" class="form-control" placeholder="Nom Statut" />
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4">
-                <input asp-for="VueListeCourrier.NomDepartement" class="form-control" placeholder="NomDepartement" />
+                <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurExterne" class="form-control" placeholder="Expediteur externe" />
             </div>
             <div class="col-md-4">
-                <input asp-for="VueListeCourrier.NomResponsable" class="form-control" placeholder="NomResponsable" />
+                <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="form-control" placeholder="Expediteur interne" />
             </div>
             <div class="col-md-4">
-                <input asp-for="VueListeCourrier.Flag" class="form-control" placeholder="Flag" />
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-4">
-                <input asp-for="VueListeCourrier.Commentaire" class="form-control" placeholder="Commentaire" />
+                <input asp-for="Historique.Utilisateur.Nom" class="form-control" placeholder="Nom responsable" />
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4">
-                    <div class="form-row align-items-center">
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary ">Search</button>
-                        </div>
-                    </div>
+                <input asp-for="Historique.CourrierDestinataire.Departement.Designation" class="form-control" placeholder="Destinataire" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="form-control" placeholder="Commentaire" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Fichier" class="form-control" placeholder="Pièce jointe" />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                <input asp-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="form-control" placeholder="Recepteur" />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                <div class="form-row align-items-center">
+                    <button type="submit" class="btn btn-primary">Search</button>
+@*                    <input type="reset" class="btn btn-danger" value="Reset">*@
                 </div>
             </div>
+        </div>
     </form>
-</div>*@
+</div>
 
 @*<div id="Grid">
     <table  class="table table-hover">

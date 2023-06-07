@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-6">
-@*            @if (ViewData.ModelState.Any())
+            @if (ViewData.ModelState.Any())
             {
                 <div class="alert alert-danger">
                     @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
@@ -20,93 +20,88 @@
                         <br />
                     }
                 </div>
-            }*@
-           @* <div class="form-group">
-                <label asp-for="Historique.IdCourrierDestinataire" class="control-label"></label>
-                <input asp-for="Historique.IdCourrierDestinataire" value = "@Model.Historique.IdCourrierDestinataire" class="form-control" disabled/>
-                <span asp-validation-for="Historique.IdCourrierDestinataire" class="text-danger"></span>
+            }
+            <div class="form-group">
+            <label asp-for="CourrierDestinataire.Id" class="control-label"></label>
+                <input asp-for="CourrierDestinataire.Id" value = "@Model.CourrierDestinataire.Id" class="form-control" disabled/>
+                <span asp-validation-for="CourrierDestinataire.Id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Historique.CourrierDestinataire.Courrier.Objet" class="control-label"></label>
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Objet" value="@Model.Historique.CourrierDestinataire.Courrier.Objet" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Objet" class="text-danger"></span>
+                <label asp-for="CourrierDestinataire.Courrier.Objet" class="control-label"></label>
+                <input asp-for="CourrierDestinataire.Courrier.Objet" value="@Model.CourrierDestinataire.Courrier.Objet" class="form-control" disabled />
+                <span asp-validation-for="CourrierDestinataire.Courrier.Objet" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Historique.CourrierDestinataire.Courrier.Reference" class="control-label"></label>
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Reference" value="@Model.Historique.CourrierDestinataire.Courrier.Reference" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Reference" class="text-danger"></span>
+                <label asp-for="CourrierDestinataire.Courrier.Reference" class="control-label"></label>
+                <input asp-for="CourrierDestinataire.Courrier.Reference" value="@Model.CourrierDestinataire.Courrier.Reference" class="form-control" disabled />
+                <span asp-validation-for="CourrierDestinataire.Courrier.Reference" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="control-label"></label>
-                <texarea asp-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="form-control" disabled>
-                    @Model.Historique.CourrierDestinataire.Courrier.Commentaire
+                <label asp-for="CourrierDestinataire.Courrier.Commentaire" class="control-label"></label>
+                <texarea asp-for="CourrierDestinataire.Courrier.Commentaire" class="form-control" disabled>
+                    @Model.CourrierDestinataire.Courrier.Commentaire
                 </textarea>
-                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="text-danger"></span>
+                <span asp-validation-for="CourrierDestinataire.Courrier.Commentaire" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Pièce Jointe</label>
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Fichier" value="@Model.Historique.CourrierDestinataire.Courrier.Fichier" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Fichier" class="text-danger"></span>
+                <input asp-for="CourrierDestinataire.Courrier.Fichier" value="@Model.CourrierDestinataire.Courrier.Fichier" class="form-control" disabled />
+                <span asp-validation-for="CourrierDestinataire.Courrier.Fichier" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Date création</label>
-                <input asp-for="Historique.CourrierDestinataire.Courrier.DateCreation" value="@Model.Historique.CourrierDestinataire.Courrier.DateCreation.ToString()" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.DateCreation" class="text-danger"></span>
-            </div>*@
-            @*<div class="form-group">
+                <input asp-for="CourrierDestinataire.Courrier.DateCreation" value="@Model.CourrierDestinataire.Courrier.DateCreation.ToString()" class="form-control" disabled />
+                <span asp-validation-for="CourrierDestinataire.Courrier.DateCreation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label class="control-label">Expéditeur</label>
-                @if (Model.Historique.CourrierDestinataire.Courrier.ExpediteurInterne != null)
+                @if (Model.CourrierDestinataire.Courrier.ExpediteurInterne != null)
                 {
-                    <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" value="@Model.Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="form-control" disabled />
-                    <span asp-validation-for="Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="text-danger"></span>
+                    <input asp-for="CourrierDestinataire.Courrier.ExpediteurInterne.Designation" value="@Model.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="form-control" disabled />
+                    <span asp-validation-for="CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="text-danger"></span>
                 } else
                 {
-                    <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurExterne" value="@Model.Historique.CourrierDestinataire.Courrier.ExpediteurExterne" class="form-control" disabled />
-                    <span asp-validation-for="Historique.CourrierDestinataire.Courrier.ExpediteurExterne" class="text-danger"></span>
+                    <input asp-for="CourrierDestinataire.Courrier.ExpediteurExterne" value="@Model.CourrierDestinataire.Courrier.ExpediteurExterne" class="form-control" disabled />
+                    <span asp-validation-for="CourrierDestinataire.Courrier.ExpediteurExterne" class="text-danger"></span>
                 }
-            </div>*@
-            @*<div class="form-group">
+            </div>
+            <div class="form-group">
                 <label class="control-label">Recepteur</label>
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" value="@Model.Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="text-danger"></span>
+                <input asp-for="CourrierDestinataire.Courrier.Recepteur.Nom" value="@Model.CourrierDestinataire.Courrier.Recepteur.Nom" class="form-control" disabled />
+                <span asp-validation-for="CourrierDestinataire.Courrier.Recepteur.Nom" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Flag</label>
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Flag" value="@Model.Historique.CourrierDestinataire.Courrier.Flag" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Flag" class="text-danger"></span>
+                <input asp-for="CourrierDestinataire.Courrier.Flag" value="@Model.CourrierDestinataire.Courrier.Flag" class="form-control" disabled />
+                <span asp-validation-for="CourrierDestinataire.Courrier.Flag" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Département cible</label>
-                <input asp-for="Historique.CourrierDestinataire.Departement.Designation" value="@Model.Historique.CourrierDestinataire.Departement.Designation" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Departement.Designation" class="text-danger"></span>
-            </div>*@
+            <input asp-for="CourrierDestinataire.DepartementDestinataire.Designation" value="@Model.CourrierDestinataire.DepartementDestinataire.Designation" class="form-control" disabled />
+            <span asp-validation-for="CourrierDestinataire.DepartementDestinataire.Designation" class="text-danger"></span>
+            </div>
             
                 @if (Model.Prochain != null && Model.Prochain.Any())
                 {
                     <form method="post">
                         <div class="form-group">
                             <label class="control-label">Responsable</label>
-                            @if (Model.Prochain != null && Model.Prochain.Any())
-                            {
-                                <select asp-for="Historique.IdResponsable" class="form-control" asp-items="ViewBag.Prochain"></select>
-                                <span asp-validation -for="Historique.IdResponsable" class="text-danger"></span>
-                            }
-                            else
-                            {
-                                <p>En attente...</p>
-                            }
+                            <select asp-for="CourrierDestinataire.IdResponsable" class="form-control" asp-items="ViewBag.Prochain"></select>
+                            <span asp-validation-for="CourrierDestinataire.IdResponsable" class="text-danger"></span>
                         </div>
-                        @*<div class="form-group">
+                        <div class="form-group">
                             <label class="control-label">Date historique</label>
-                            <input asp-for="Historique.DateHistorique" class="form-control" />
-                            <span asp-validation-for="Historique.DateHistorique" class="text-danger"></span>
-                        </div>*@
-                        @*<input type="hidden" asp-for="Historique.Id" value="@Model.Historique.Id" />*@
-                        @*<input type="hidden" asp-for="Historique.IdStatut" value="@Model.Historique.IdStatut" />*@
-                        @*<input type="hidden" asp-for="Historique.IdCourrierDestinataire" value="@Model.Historique.IdCourrierDestinataire" />
+                    <input asp-for="CourrierDestinataire.DateMaj" class="form-control" />
+                    <span asp-validation-for="CourrierDestinataire.DateMaj" class="text-danger"></span>
+                        </div>
+                            <input type="hidden" asp-for="CourrierDestinataire.Id" value="@Model.CourrierDestinataire.Id" />
+                            <input type="hidden" asp-for="CourrierDestinataire.IdStatut" value="@Model.CourrierDestinataire.IdStatut" />
+                            <input type="hidden" asp-for="CourrierDestinataire.IdCourrier" value="@Model.CourrierDestinataire.IdCourrier" />
+                            <input type="hidden" asp-for="CourrierDestinataire.IdDepartementDestinataire" value="@Model.CourrierDestinataire.IdDepartementDestinataire" />
+                            @*<input type="hidden" asp-for="CourrierDestinataire.IdResponsable" value="@Model.CourrierDestinataire.IdResponsable" />*@
                         <div class="form-group mt-3">
                             <input type="submit" value="Transferer" class="btn btn-primary" />
-                        </div>*@
+                        </div>
                     </form>
                 }
             

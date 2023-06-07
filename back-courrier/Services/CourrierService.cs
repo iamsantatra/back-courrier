@@ -5,6 +5,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net.NetworkInformation;
 
 namespace back_courrier.Services
 {
@@ -78,6 +79,12 @@ namespace back_courrier.Services
             return query/*.OrderByDescending(h => h.Id)*/;
         }
 
+        public IQueryable<CourrierDestinataire> ListeCourrierReceptionnisteQuery(int pageNumber, int pageSize, Boolean pagination)
+        {
+            return ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
+                /* .Where(h => h.Statut.Code == _configuration["Constants:Statut:TransSec"])*/
+                /*.ToList()*/;
+        }
         public IQueryable<CourrierDestinataire> ListeCourrierCoursierQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             var query = ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
@@ -86,13 +93,6 @@ namespace back_courrier.Services
                 /*.ToList()*/;
 
             return query;
-        }
-
-        public IQueryable<CourrierDestinataire> ListeCourrierReceptionnisteQuery(int pageNumber, int pageSize, Boolean pagination)
-        {
-            return ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
-                /* .Where(h => h.Statut.Code == _configuration["Constants:Statut:TransSec"])*/
-                /*.ToList()*/;
         }
 
         public IQueryable<CourrierDestinataire> ListeCourrierSecQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
@@ -134,7 +134,8 @@ namespace back_courrier.Services
 
         public IList<CourrierDestinataire> ListeCourrier(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
-            return ListeCourrierQuery(employe, pageNumber, pageSize, pagination).ToList();
+            IList <CourrierDestinataire> listeCourrier = ListeCourrierQuery(employe, pageNumber, pageSize, pagination).ToList();
+            return listeCourrier;
         }
 
         public CourrierDestinataire GetDetailsCourrier(int IdCourrierDestinataire)
@@ -154,16 +155,35 @@ namespace back_courrier.Services
                             .First();*/
             return detailsCourrier;
         }
-        public Historique TransfertCourrier(CourrierDestinataire historique)
+        public CourrierDestinataire TransfertCourrier(CourrierDestinataire courrierDestinataire)
         {
-            Historique hResultat = new Historique();
-            hResultat.IdStatut = historique.IdStatut + 1;
-            /*hResultat.IdCourrierDestinataire = historique.IdCourrierDestinataire;*/
-            hResultat.IdResponsable = historique.IdResponsable;
-            _context.Historique.Add(hResultat);
-            return hResultat;
+            CourrierDestinataire cd = courrierDestinataire;
+            if (cd != null)
+            {
+                cd.IdStatut++;
+                cd.IdResponsable = cd.IdResponsable;
+                var defaultDate = DateTime.UtcNow;
+
+                Historique historique = new Historique
+                {
+                    IdCourrierDestinataire = cd.Id,
+                    IdStatut = cd.IdStatut,
+                    IdResponsable = cd.IdResponsable,
+                    DateHistorique = cd.DateMaj
+                };
+                if (!cd.DateMaj.HasValue)
+                {
+                    cd.DateMaj = defaultDate;
+                    historique.DateHistorique = DateTime.UtcNow;
+                }
+                _context.CourrierDestinataire.Update(cd);
+                _context.Historique.Add(historique);
+                _context.SaveChanges();
+            }
+            return cd;
         }
-        public byte[] ExportPDF(IList<CourrierDestinataire> historiques)
+
+        public byte[] ExportPDF(IList<CourrierDestinataire> cds)
         {
             using (MemoryStream stream = new MemoryStream())
             {
@@ -175,7 +195,7 @@ namespace back_courrier.Services
                 // Create the table and set its properties
                 PdfPTable table = new PdfPTable(10); // Adjust the number of columns as needed
                 table.WidthPercentage = 100;
-                table.SetWidths(new float[] { 0.5f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f }); // Adjust the column widths as needed
+                table.SetWidths(new float[] { 1f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f }); // Adjust the column widths as needed
 
                 // Add the table headers
                 PdfPCell headerCell1 = new PdfPCell(new Phrase("ID", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
@@ -203,38 +223,38 @@ namespace back_courrier.Services
                 table.AddCell(headerCell11);
 
                 // Add the historique data to the table
-                foreach (var historique in historiques)
+                foreach (var cd in cds)
                 {
-                    /*PdfPCell cell1 = new PdfPCell(new Phrase(historique.Id.ToString()));
-                    PdfPCell cell2 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Objet));
-                    PdfPCell cell3 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Reference));
-                    *//*PdfPCell cell4 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Commentaire));*//*
-                    PdfPCell cell5 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.DateCreation.ToString()));
+                    PdfPCell cell1 = new PdfPCell(new Phrase(cd.Id.ToString()));
+                    PdfPCell cell2 = new PdfPCell(new Phrase(cd.Courrier.Objet));
+                    PdfPCell cell3 = new PdfPCell(new Phrase(cd.Courrier.Reference));
+                    /*PdfPCell cell4 = new PdfPCell(new Phrase(cd.Courrier.Commentaire));*/
+                    PdfPCell cell5 = new PdfPCell(new Phrase(cd.Courrier.DateCreation.ToString()));
                     PdfPCell cell6 = null;
-                    if (historique.CourrierDestinataire.Courrier.ExpediteurInterne != null)
+                    if (cd.Courrier.ExpediteurInterne != null)
                     {
-                        cell6 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation));
+                        cell6 = new PdfPCell(new Phrase(cd.Courrier.ExpediteurInterne.Designation));
                     }
                     else
                     {
-                        cell6 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.ExpediteurExterne));
+                        cell6 = new PdfPCell(new Phrase(cd.Courrier.ExpediteurExterne));
                     }
-                    PdfPCell cell7 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Recepteur.Nom));
-                    PdfPCell cell8 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Flag));
-                    PdfPCell cell9 = new PdfPCell(new Phrase(historique.CourrierDestinataire.DepartementDestinataire.Designation));
-                    PdfPCell cell10 = new PdfPCell(new Phrase(historique.Statut.Designation));
-                    PdfPCell cell11 = new PdfPCell(new Phrase(historique.Responsable.Nom));*/
-/*                    table.AddCell(cell1);
+                    PdfPCell cell7 = new PdfPCell(new Phrase(cd.Courrier.Recepteur.Nom));
+                    PdfPCell cell8 = new PdfPCell(new Phrase(cd.Courrier.Flag));
+                    PdfPCell cell9 = new PdfPCell(new Phrase(cd.DepartementDestinataire.Designation));
+                    PdfPCell cell10 = new PdfPCell(new Phrase(cd.Statut.Designation));
+                    PdfPCell cell11 = new PdfPCell(new Phrase(cd.Responsable.Nom));
+                    table.AddCell(cell1);
                     table.AddCell(cell2);
                     table.AddCell(cell3);
-                    *//*table.AddCell(cell4);*//*
+                    /*table.AddCell(cell4);*/
                     table.AddCell(cell5);
                     table.AddCell(cell6);
                     table.AddCell(cell7);
                     table.AddCell(cell8);
                     table.AddCell(cell9);
                     table.AddCell(cell10);
-                    table.AddCell(cell11);*/
+                    table.AddCell(cell11);
                 }
 
                 // Add the table to the document
@@ -264,40 +284,40 @@ namespace back_courrier.Services
                     && h.CourrierDestinataire.Courrier.DateCreation <= DateCreationEnd.Value);
             }
 
-            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.Courrier.Reference))
+            if (!string.IsNullOrEmpty(cd.Courrier.Reference))
             {
                 query = query.Where(h => h.CourrierDestinataire.Courrier.Reference
-                    .Contains(historique.CourrierDestinataire.Courrier.Reference));
+                    .Contains(cd.Courrier.Reference));
             }
 
-            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.Courrier.Objet))
+            if (!string.IsNullOrEmpty(cd.Courrier.Objet))
             {
                 query = query.Where(h => h.CourrierDestinataire.Courrier.Objet
-                    .Contains(historique.CourrierDestinataire.Courrier.Objet));
+                    .Contains(cd.Courrier.Objet));
             }
 
-            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.Courrier.ExpediteurExterne))
+            if (!string.IsNullOrEmpty(cd.Courrier.ExpediteurExterne))
             {
                 query = query.Where(h => h.CourrierDestinataire.Courrier.ExpediteurExterne
-                    .Contains(historique.CourrierDestinataire.Courrier.ExpediteurExterne));
+                    .Contains(cd.Courrier.ExpediteurExterne));
             }
 
-            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation))
+            if (!string.IsNullOrEmpty(cd.Courrier.ExpediteurInterne.Designation))
             {
                 query = query.Where(h => h.CourrierDestinataire.Courrier.ExpediteurInterne.Designation
-                    .Contains(historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation));
+                    .Contains(cd.Courrier.ExpediteurInterne.Designation));
             }
 
-            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.Courrier.Flag))
+            if (!string.IsNullOrEmpty(cd.Courrier.Flag))
             {
                 query = query.Where(h => h.CourrierDestinataire.Courrier.Flag
-                    .Contains(historique.CourrierDestinataire.Courrier.Flag));
+                    .Contains(cd.Courrier.Flag));
             }
 
-            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.Courrier.Commentaire))
+            if (!string.IsNullOrEmpty(cd.Courrier.Commentaire))
             {
                 query = query.Where(h => h.CourrierDestinataire.Courrier.Commentaire
-                    .Contains(historique.CourrierDestinataire.Courrier.Commentaire));
+                    .Contains(cd.Courrier.Commentaire));
             }
 */
 /*            if (!string.IsNullOrEmpty(historique.Statut.Designation))
@@ -305,10 +325,10 @@ namespace back_courrier.Services
                 query = query.Where(h => h.Statut.Designation.Contains(historique.Statut.Designation));
             }*/
 /*
-            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.DepartementDestinat.Designation))
+            if (!string.IsNullOrEmpty(cd.DepartementDestinat.Designation))
             {
                 query = query.Where(h => h.CourrierDestinataire.Departement.Designation
-                    .Contains(historique.CourrierDestinataire.Departement.Designation));
+                    .Contains(cd.Departement.Designation));
             }
 
             if (!string.IsNullOrEmpty(historique.Utilisateur.Nom))

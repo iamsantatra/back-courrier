@@ -12,8 +12,7 @@ namespace back_courrier.Services
         IQueryable<CourrierDestinataire> ListeCourrierDirQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
         IQueryable<CourrierDestinataire> ListeCourrierQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
         CourrierDestinataire GetDetailsCourrier(int IdCourrierDestinataire);
-        Historique TransfertCourrier(CourrierDestinataire historique);
-        /*        int CalculateTotalPages(IList<Historique> listeCourrier, int pageSize);*/
+        CourrierDestinataire TransfertCourrier(CourrierDestinataire courrierDestinataire);
         byte[] ExportPDF(IList<CourrierDestinataire> listeCourrier);
         IQueryable<CourrierDestinataire> QuerySearchBuilder(DateTime? DateCreationStart, DateTime? DateCreationEnd,
             CourrierDestinataire courrierDestinataire, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);

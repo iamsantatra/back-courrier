@@ -16,7 +16,7 @@ namespace back_courrier.Pages
         public List<Utilisateur> Prochain;
         private Utilisateur _currentUser;
         [BindProperty]
-        public CourrierDestinataire Historique { get; set; } = default!;
+        public CourrierDestinataire CourrierDestinataire { get; set; } = default!;
         public HistoriqueModel(ApplicationDbContext context, ICourrierService courrierService,
             IUtilisateurService employeService, IConfiguration configuration)
         {
@@ -33,8 +33,8 @@ namespace back_courrier.Pages
             if(Prochain != null) { 
                 ViewData["Prochain"] = new SelectList(Prochain, "Id", "Nom");
             }
-            Historique = _courrierService.GetDetailsCourrier(id);
-            if (Historique == null)
+            CourrierDestinataire = _courrierService.GetDetailsCourrier(id);
+            if (CourrierDestinataire == null)
             {
                 return RedirectToPage("./ListeCourrier");
             }
@@ -46,15 +46,17 @@ namespace back_courrier.Pages
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync(int id, int idDepartement, int idStatut)
         {
-            if (!ModelState.IsValid || _context.Historique == null || Historique == null)
+/*            if (!ModelState.IsValid || _context.CourrierDestinataire == null || CourrierDestinataire == null)
             {
                 await OnGetAsync(id, idDepartement, idStatut);
                 return Page();
-            }
+            }*/
             try
             {
-                Historique.IdStatut = idStatut;
-                _courrierService.TransfertCourrier(Historique);
+                CourrierDestinataire.IdStatut = idStatut;
+                _currentUser = _employeService.GetUtilisateurByClaim(User);
+                _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
+                _courrierService.TransfertCourrier(CourrierDestinataire);
                 await _context.SaveChangesAsync();
 
                 return RedirectToPage("./ListeCourrier");

@@ -119,7 +119,7 @@ namespace back_courrier.Data
             var statuts = new List<Statut>
             {
                 new Statut{Code="REC", Designation="reçu par le receptionniste"},
-                new Statut{Code="COUR", Designation="transferé au coursier"},
+                new Statut{Code="COU", Designation="transferé au coursier"},
                 new Statut{Code="SEC", Designation="transferé au sécrétaire"},
                 new Statut{Code="DIR", Designation="livré"}
             };

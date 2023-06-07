@@ -59,19 +59,29 @@ namespace back_courrier.Data
                 .HasForeignKey(cd => cd.IdStatut)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<CourrierDestinataire>()
+                .HasOne(cd => cd.Responsable)
+                .WithMany()
+                .HasForeignKey(cd => cd.IdResponsable)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Historique>()
                 .HasOne(h => h.CourrierDestinataire)
                 .WithMany()
                 .HasForeignKey(h => h.IdCourrierDestinataire)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Historique>()
                 .HasOne(h => h.Statut)
                 .WithMany()
                 .HasForeignKey(h => h.IdStatut)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Historique>()
+                .HasOne(h => h.Responsable)
+                .WithMany()
+                .HasForeignKey(h => h.IdResponsable)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         public void SeedData()

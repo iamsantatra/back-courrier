@@ -176,7 +176,7 @@ namespace back_courrier.Services
                     cd.DateMaj = defaultDate;
                     historique.DateHistorique = DateTime.UtcNow;
                 }
-                _context.CourrierDestinataire.Update(cd);
+                _context.Update(cd);
                 _context.Historique.Add(historique);
                 _context.SaveChanges();
             }
@@ -270,71 +270,71 @@ namespace back_courrier.Services
         {
             var query = this.ListeCourrierQuery(employe, pageNumber, pageSize, pagination);
 
-            /*if (DateCreationStart.HasValue)
+            if (DateCreationStart.HasValue)
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.DateCreation >= DateCreationStart.Value);
+                query = query.Where(h => h.Courrier.DateCreation >= DateCreationStart.Value);
             }
             if (DateCreationEnd.HasValue)
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.DateCreation <= DateCreationEnd.Value);
+                query = query.Where(h => h.Courrier.DateCreation <= DateCreationEnd.Value);
             }
             if (DateCreationStart.HasValue && DateCreationEnd.HasValue)
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.DateCreation >= DateCreationStart.Value 
-                    && h.CourrierDestinataire.Courrier.DateCreation <= DateCreationEnd.Value);
+                query = query.Where(h => h.Courrier.DateCreation >= DateCreationStart.Value
+                    && h.Courrier.DateCreation <= DateCreationEnd.Value);
             }
 
-            if (!string.IsNullOrEmpty(cd.Courrier.Reference))
+            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.Reference))
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.Reference
-                    .Contains(cd.Courrier.Reference));
+                query = query.Where(h => h.Courrier.Reference
+                    .Contains(courrierDestinataire.Courrier.Reference));
             }
 
-            if (!string.IsNullOrEmpty(cd.Courrier.Objet))
+            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.Objet))
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.Objet
-                    .Contains(cd.Courrier.Objet));
+                query = query.Where(h => h.Courrier.Objet
+                    .Contains(courrierDestinataire.Courrier.Objet));
             }
 
-            if (!string.IsNullOrEmpty(cd.Courrier.ExpediteurExterne))
+            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.ExpediteurExterne))
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.ExpediteurExterne
-                    .Contains(cd.Courrier.ExpediteurExterne));
+                query = query.Where(h => h.Courrier.ExpediteurExterne
+                    .Contains(courrierDestinataire.Courrier.ExpediteurExterne));
             }
 
-            if (!string.IsNullOrEmpty(cd.Courrier.ExpediteurInterne.Designation))
+            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.ExpediteurInterne.Designation))
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.ExpediteurInterne.Designation
-                    .Contains(cd.Courrier.ExpediteurInterne.Designation));
+                query = query.Where(h => h.Courrier.ExpediteurInterne.Designation
+                    .Contains(courrierDestinataire.Courrier.ExpediteurInterne.Designation));
             }
 
-            if (!string.IsNullOrEmpty(cd.Courrier.Flag))
+            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.Flag))
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.Flag
-                    .Contains(cd.Courrier.Flag));
+                query = query.Where(h => h.Courrier.Flag
+                    .Contains(courrierDestinataire.Courrier.Flag));
             }
 
-            if (!string.IsNullOrEmpty(cd.Courrier.Commentaire))
+            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.Commentaire))
             {
-                query = query.Where(h => h.CourrierDestinataire.Courrier.Commentaire
-                    .Contains(cd.Courrier.Commentaire));
-            }
-*/
-/*            if (!string.IsNullOrEmpty(historique.Statut.Designation))
-            {
-                query = query.Where(h => h.Statut.Designation.Contains(historique.Statut.Designation));
-            }*/
-/*
-            if (!string.IsNullOrEmpty(cd.DepartementDestinat.Designation))
-            {
-                query = query.Where(h => h.CourrierDestinataire.Departement.Designation
-                    .Contains(cd.Departement.Designation));
+                query = query.Where(h => h.Courrier.Commentaire
+                    .Contains(courrierDestinataire.Courrier.Commentaire));
             }
 
-            if (!string.IsNullOrEmpty(historique.Utilisateur.Nom))
+            if (!string.IsNullOrEmpty(courrierDestinataire.Statut.Designation))
             {
-                query = query.Where(h => h.Utilisateur.Nom.Contains(historique.Utilisateur.Nom));
-            }*/
+                query = query.Where(h => h.Statut.Designation.Contains(courrierDestinataire.Statut.Designation));
+            }
+
+            if (!string.IsNullOrEmpty(courrierDestinataire.DepartementDestinataire.Designation))
+            {
+                query = query.Where(h => h.DepartementDestinataire.Designation
+                    .Contains(courrierDestinataire.DepartementDestinataire.Designation));
+            }
+
+            if (!string.IsNullOrEmpty(courrierDestinataire.Responsable.Nom))
+            {
+                query = query.Where(h => h.Responsable.Nom.Contains(courrierDestinataire.Responsable.Nom));
+            }
 
             return query;
         }

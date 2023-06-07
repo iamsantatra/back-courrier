@@ -51,7 +51,7 @@ namespace back_courrier.Pages
         }
 
         [BindProperty]
-        public CourrierDestinataire Historique { get; set; }
+        public CourrierDestinataire cd { get; set; }
 
         [BindProperty]
         public DateTime? DateCreationStart { get; set; } = null;
@@ -107,15 +107,15 @@ namespace back_courrier.Pages
             _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
             string dirRole = _configuration.GetValue<string>("Constants:Role:DirRole");
             string secRole = _configuration.GetValue<string>("Constants:Role:SecRole");
-            string courRole = _configuration.GetValue<string>("Constants:Role:CourRole");
+            string courRole = _configuration.GetValue<string>("Constants:Role:CouRole");
             string recRole = _configuration.GetValue<string>("Constants:Role:RecRole");
             ViewData["DirRole"] = dirRole;
             ViewData["SecRole"] = secRole;
             ViewData["CourRole"] = courRole;
             ViewData["RecRole"] = recRole;
-            listeCourrier = _courrierService.ListeRecherche(DateCreationStart, DateCreationEnd, Historique, _currentUser, _pageNumber, _pageSize, false);
-            listeCourrierSansPag = _courrierService.ListeRecherche(DateCreationStart, DateCreationEnd, Historique, _currentUser, _pageNumber, _pageSize, false);
-            _totalPages = /*Helper.CalculateTotalPage(listeCourrierSansPag.ToList(), _pageSize)*/0;
+            listeCourrier = _courrierService.ListeRecherche(DateCreationStart, DateCreationEnd, cd, _currentUser, _pageNumber, _pageSize, true);
+            listeCourrierSansPag = _courrierService.ListeRecherche(DateCreationStart, DateCreationEnd, cd, _currentUser, _pageNumber, _pageSize, false);
+            _totalPages = Helper.CalculateTotalPage(listeCourrierSansPag.ToList(), _pageSize);
             return Page();
         }
     }

@@ -25,14 +25,14 @@
 <div>
     <form method="post" asp-page-handler="Search">
         <div class="row">
-@*            <div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Reference" class="form-control" placeholder="Reference" />
+            <div class="col-md-4">
+                <input asp-for="cd.Courrier.Reference" class="form-control" placeholder="Reference" />
             </div>
             <div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Objet" class="form-control" placeholder="Objet" />
+                <input asp-for="cd.Courrier.Objet" class="form-control" placeholder="Objet" />
             </div>
             <div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Flag" class="form-control" placeholder="Flag" />
+                <input asp-for="cd.Courrier.Flag" class="form-control" placeholder="Flag" />
             </div>
         </div>
         <div class="row mt-2">
@@ -43,35 +43,35 @@
                 <input asp-for="@Model.DateCreationEnd" class="form-control" placeholder="DateCreationEnd" />
             </div>
             <div class="col-md-4">
-                <input asp-for="Historique.Statut.Designation" class="form-control" placeholder="Nom Statut" />
+                <input asp-for="cd.Statut.Designation" class="form-control" placeholder="Nom Statut" />
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurExterne" class="form-control" placeholder="Expediteur externe" />
+                <input asp-for="cd.Courrier.ExpediteurExterne" class="form-control" placeholder="Expediteur externe" />
             </div>
             <div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="form-control" placeholder="Expediteur interne" />
-            </div>*@
-            <div class="col-md-4">
-                @*<input asp-for="Historique.Utilisateur.Nom" class="form-control" placeholder="Nom responsable" />*@
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-4">
-               @* <input asp-for="Historique.CourrierDestinataire.Departement.Designation" class="form-control" placeholder="Destinataire" />*@
-            </div>
-            @*<div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="form-control" placeholder="Commentaire" />
+                <input asp-for="cd.Courrier.ExpediteurInterne.Designation" class="form-control" placeholder="Expediteur interne" />
             </div>
             <div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Fichier" class="form-control" placeholder="Pièce jointe" />
+                <input asp-for="cd.Responsable.Nom" class="form-control" placeholder="Nom responsable" />
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="form-control" placeholder="Recepteur" />
-            </div>*@
+                <input asp-for="cd.DepartementDestinataire.Designation" class="form-control" placeholder="Destinataire" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="cd.Courrier.Commentaire" class="form-control" placeholder="Commentaire" />
+            </div>
+            <div class="col-md-4">
+                <input asp-for="cd.Courrier.Fichier" class="form-control" placeholder="Pièce jointe" />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                <input asp-for="cd.Courrier.Recepteur.Nom" class="form-control" placeholder="Recepteur" />
+            </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4">

@@ -4,6 +4,7 @@ using back_courrier.Data;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace back_courrier.Services
 {
@@ -27,43 +28,44 @@ namespace back_courrier.Services
             courrier.Recepteur = employe;
             courrier.IdReceptionniste = employe.Id;
             courrier.Fichier = _fileUploadService.UploadFileAsync(formFile);
-            if(!courrier.DateCreation.HasValue)
+            _context.Courrier.Add(courrier);
+            if (!courrier.DateCreation.HasValue)
             {
                 courrier.DateCreation = DateTime.Now;
             }
             List<CourrierDestinataire> destinataires = SelectedDestinataires
                 .Select(departement => new CourrierDestinataire(courrier, departement, statusCreer, employe)).ToList();
-            _context.Courrier.Add(courrier);
-            courrier.Destinataires = destinataires;
-            destinataires.ForEach(courrierDestinataire =>
+            
+            foreach (CourrierDestinataire dest in destinataires)
             {
-                _context.Historique.Add(new Historique(courrierDestinataire, statusCreer, employe));
-            });
+                dest.Historiques = new Collection<Historique>();
+                dest.Historiques.Add(new Historique { Statut = statusCreer });
+            }
+            courrier.Destinataires = destinataires;
+            foreach (CourrierDestinataire dest in destinataires)
+            {
+                dest.Historiques = new Collection<Historique>();
+                dest.Historiques.Add(new Historique { Statut = statusCreer, CourrierDestinataire = dest, Responsable = employe });
+            }
             return courrier;
         }
 
-        public IQueryable<Historique> ListeCourrierBaseQuery(int pageNumber, int pageSize, Boolean pagination)
+        public IQueryable<CourrierDestinataire> ListeCourrierBaseQuery(int pageNumber, int pageSize, Boolean pagination)
         {
-            var subquery = _context.Historique
-                .GroupBy(h => h.IdCourrierDestinataire)
-                .Select(g => g.OrderBy(h => h.Id).FirstOrDefault())
-                .Select(h => h.Id);
 
-            var query = _context.Historique
-                .Include(h => h.CourrierDestinataire)
-                    .ThenInclude(cd => cd.Courrier)
-                        .ThenInclude(c => c.ExpediteurInterne)
-                .Include(h => h.CourrierDestinataire)
-                    .ThenInclude(cd => cd.Courrier)
-                        .ThenInclude(c => c.Recepteur)
-                .Include(h => h.CourrierDestinataire)
-                    .ThenInclude(cd => cd.DepartementDestinataire)
-                .Include(h => h.Statut)
-                .Include(h => h.Responsable)
-                .Where(h => subquery.Contains(h.Id))
-                /*.OrderByDescending(h => h.Id)*/;
-            /*.Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize);*/
+            var query = _context.CourrierDestinataire
+                .Include(cd => cd.Courrier)
+                    .ThenInclude(c => c.ExpediteurInterne)
+                .Include(cd => cd.Courrier)
+                    .ThenInclude(c => c.Recepteur)
+                .Include(cd => cd.Responsable)
+                    .ThenInclude(r => r.Departement)
+                .Include(cd => cd.Responsable)
+                    .ThenInclude(r => r.Poste)
+                .Include(cd => cd.Responsable)
+                    .ThenInclude(r => r.Poste)
+                .Include(cd => cd.Statut)
+                .Include(cd => cd.DepartementDestinataire).AsQueryable();
 
 
             if (pagination)
@@ -76,46 +78,46 @@ namespace back_courrier.Services
             return query/*.OrderByDescending(h => h.Id)*/;
         }
 
-        public IQueryable<Historique> ListeCourrierCoursierQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
+        public IQueryable<CourrierDestinataire> ListeCourrierCoursierQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             var query = ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
                 .Where(h => h.IdResponsable == employe.Id
-                && h.Statut.Code == _configuration["Constants:Statut:TransCour"])
+                && h.Statut.Code == _configuration["Constants:Statut:TransCou"])
                 /*.ToList()*/;
 
             return query;
         }
 
-        public IQueryable<Historique> ListeCourrierReceptionnisteQuery(int pageNumber, int pageSize, Boolean pagination)
+        public IQueryable<CourrierDestinataire> ListeCourrierReceptionnisteQuery(int pageNumber, int pageSize, Boolean pagination)
         {
             return ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
                 /* .Where(h => h.Statut.Code == _configuration["Constants:Statut:TransSec"])*/
                 /*.ToList()*/;
         }
 
-        public IQueryable<Historique> ListeCourrierSecQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
+        public IQueryable<CourrierDestinataire> ListeCourrierSecQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             return ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
-                .Where(h => h.CourrierDestinataire.IdDepartementDestinataire == employe.IdDepartement
+                .Where(h => h.DepartementDestinataire.Id == employe.IdDepartement
                 && h.Statut.Code == _configuration["Constants:Statut:TransSec"])
                 /*.ToList()*/;
         }
 
-        public IQueryable<Historique> ListeCourrierDirQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
+        public IQueryable<CourrierDestinataire> ListeCourrierDirQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             return ListeCourrierBaseQuery(pageNumber, pageSize, pagination)
-                .Where(h => h.CourrierDestinataire.IdDepartementDestinataire == employe.IdDepartement
+                .Where(h => h.DepartementDestinataire.Id == employe.IdDepartement
                 && h.Statut.Code == _configuration["Constants:Statut:Livre"])
                 /*.ToList()*/;
         }
 
-        public IQueryable<Historique> ListeCourrierQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
+        public IQueryable<CourrierDestinataire> ListeCourrierQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             if (employe.Poste.Code == _configuration["Constants:Role:RecRole"])
             {
                 return ListeCourrierReceptionnisteQuery(pageNumber, pageSize, pagination);
             }
-            if (employe.Poste.Code == _configuration["Constants:Role:CourRole"])
+            if (employe.Poste.Code == _configuration["Constants:Role:CouRole"])
             {
                 return ListeCourrierCoursierQuery(employe, pageNumber, pageSize, pagination);
             }
@@ -130,38 +132,38 @@ namespace back_courrier.Services
             return null;
         }
 
-        public IList<Historique> ListeCourrier(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
+        public IList<CourrierDestinataire> ListeCourrier(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             return ListeCourrierQuery(employe, pageNumber, pageSize, pagination).ToList();
         }
 
-        public Historique GetHistoriqueByIdCourrierDestinataire(int IdCourrierDestinataire)
+        public CourrierDestinataire GetDetailsCourrier(int IdCourrierDestinataire)
         {
-            /*Historique detailsHistorique = ListeCourrierBaseQuery().First(h => h.IdCourrierDestinataire == IdCourrierDestinataire);*/
-            Historique detailsHistorique = _context.Historique
-                .Include(h => h.CourrierDestinataire)
-                .Include(h => h.Statut)
-                .Include(h => h.CourrierDestinataire)
-                    .ThenInclude(cd => cd.Courrier)
-                .Include(h => h.CourrierDestinataire)
-                    .ThenInclude(cd => cd.DepartementDestinataire)
-                .Include(h => h.CourrierDestinataire)
-                        .ThenInclude(cd => cd.Courrier)
-                            .ThenInclude(c => c.Recepteur)
-                .Where(h => h.IdCourrierDestinataire == IdCourrierDestinataire)
-                .First();
-            return detailsHistorique;
+            CourrierDestinataire detailsCourrier = ListeCourrierBaseQuery(0, 0, false).First(cd => cd.Id == IdCourrierDestinataire);
+            /*            CourrierDestinataire detailsCourrier = _context.Historique
+                            .Include(h => h.CourrierDestinataire)
+                            .Include(h => h.Statut)
+                            .Include(h => h.CourrierDestinataire)
+                                .ThenInclude(cd => cd.Courrier)
+                            .Include(h => h.CourrierDestinataire)
+                                .ThenInclude(cd => cd.DepartementDestinataire)
+                            .Include(h => h.CourrierDestinataire)
+                                    .ThenInclude(cd => cd.Courrier)
+                                        .ThenInclude(c => c.Recepteur)
+                            .Where(h => h.IdCourrierDestinataire == IdCourrierDestinataire)
+                            .First();*/
+            return detailsCourrier;
         }
-        public Historique TransfertCourrier(Historique historique)
+        public Historique TransfertCourrier(CourrierDestinataire historique)
         {
             Historique hResultat = new Historique();
             hResultat.IdStatut = historique.IdStatut + 1;
-            hResultat.IdCourrierDestinataire = historique.IdCourrierDestinataire;
+            /*hResultat.IdCourrierDestinataire = historique.IdCourrierDestinataire;*/
             hResultat.IdResponsable = historique.IdResponsable;
             _context.Historique.Add(hResultat);
             return hResultat;
         }
-        public byte[] ExportPDF(IList<Historique> historiques)
+        public byte[] ExportPDF(IList<CourrierDestinataire> historiques)
         {
             using (MemoryStream stream = new MemoryStream())
             {
@@ -203,10 +205,10 @@ namespace back_courrier.Services
                 // Add the historique data to the table
                 foreach (var historique in historiques)
                 {
-                    PdfPCell cell1 = new PdfPCell(new Phrase(historique.Id.ToString()));
+                    /*PdfPCell cell1 = new PdfPCell(new Phrase(historique.Id.ToString()));
                     PdfPCell cell2 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Objet));
                     PdfPCell cell3 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Reference));
-                    /*PdfPCell cell4 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Commentaire));*/
+                    *//*PdfPCell cell4 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Commentaire));*//*
                     PdfPCell cell5 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.DateCreation.ToString()));
                     PdfPCell cell6 = null;
                     if (historique.CourrierDestinataire.Courrier.ExpediteurInterne != null)
@@ -221,18 +223,18 @@ namespace back_courrier.Services
                     PdfPCell cell8 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Flag));
                     PdfPCell cell9 = new PdfPCell(new Phrase(historique.CourrierDestinataire.DepartementDestinataire.Designation));
                     PdfPCell cell10 = new PdfPCell(new Phrase(historique.Statut.Designation));
-                    PdfPCell cell11 = new PdfPCell(new Phrase(historique.Responsable.Nom));
-                    table.AddCell(cell1);
+                    PdfPCell cell11 = new PdfPCell(new Phrase(historique.Responsable.Nom));*/
+/*                    table.AddCell(cell1);
                     table.AddCell(cell2);
                     table.AddCell(cell3);
-                    /*table.AddCell(cell4);*/
+                    *//*table.AddCell(cell4);*//*
                     table.AddCell(cell5);
                     table.AddCell(cell6);
                     table.AddCell(cell7);
                     table.AddCell(cell8);
                     table.AddCell(cell9);
                     table.AddCell(cell10);
-                    table.AddCell(cell11);
+                    table.AddCell(cell11);*/
                 }
 
                 // Add the table to the document
@@ -243,12 +245,12 @@ namespace back_courrier.Services
             }
         }
 
-        public IQueryable<Historique> QuerySearchBuilder(DateTime? DateCreationStart, DateTime? DateCreationEnd,
-            Historique historique, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
+        public IQueryable<CourrierDestinataire> QuerySearchBuilder(DateTime? DateCreationStart, DateTime? DateCreationEnd,
+            CourrierDestinataire courrierDestinataire, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             var query = this.ListeCourrierQuery(employe, pageNumber, pageSize, pagination);
 
-            if (DateCreationStart.HasValue)
+            /*if (DateCreationStart.HasValue)
             {
                 query = query.Where(h => h.CourrierDestinataire.Courrier.DateCreation >= DateCreationStart.Value);
             }
@@ -297,11 +299,11 @@ namespace back_courrier.Services
                 query = query.Where(h => h.CourrierDestinataire.Courrier.Commentaire
                     .Contains(historique.CourrierDestinataire.Courrier.Commentaire));
             }
-
-            if (!string.IsNullOrEmpty(historique.Statut.Designation))
+*/
+/*            if (!string.IsNullOrEmpty(historique.Statut.Designation))
             {
                 query = query.Where(h => h.Statut.Designation.Contains(historique.Statut.Designation));
-            }
+            }*/
 /*
             if (!string.IsNullOrEmpty(historique.CourrierDestinataire.DepartementDestinat.Designation))
             {
@@ -317,11 +319,11 @@ namespace back_courrier.Services
             return query;
         }
 
-        public IList<Historique> ListeRecherche(DateTime? DateCreationStart, DateTime? DateCreationEnd,
-            Historique historique, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
+        public IList<CourrierDestinataire> ListeRecherche(DateTime? DateCreationStart, DateTime? DateCreationEnd,
+            CourrierDestinataire courrierDestinataire, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
-            IList<Historique> listeRecherche = this.QuerySearchBuilder(DateCreationStart, DateCreationEnd,
-            historique, employe, pageNumber, pageSize, pagination).ToList();
+            IList<CourrierDestinataire> listeRecherche = this.QuerySearchBuilder(DateCreationStart, DateCreationEnd,
+            courrierDestinataire, employe, pageNumber, pageSize, pagination).ToList();
             return listeRecherche;
         }
     }

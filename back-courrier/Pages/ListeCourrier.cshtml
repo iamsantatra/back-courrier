@@ -25,7 +25,7 @@
 <div>
     <form method="post" asp-page-handler="Search">
         <div class="row">
-            <div class="col-md-4">
+@*            <div class="col-md-4">
                 <input asp-for="Historique.CourrierDestinataire.Courrier.Reference" class="form-control" placeholder="Reference" />
             </div>
             <div class="col-md-4">
@@ -52,7 +52,7 @@
             </div>
             <div class="col-md-4">
                 <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="form-control" placeholder="Expediteur interne" />
-            </div>
+            </div>*@
             <div class="col-md-4">
                 @*<input asp-for="Historique.Utilisateur.Nom" class="form-control" placeholder="Nom responsable" />*@
             </div>
@@ -61,7 +61,7 @@
             <div class="col-md-4">
                @* <input asp-for="Historique.CourrierDestinataire.Departement.Designation" class="form-control" placeholder="Destinataire" />*@
             </div>
-            <div class="col-md-4">
+            @*<div class="col-md-4">
                 <input asp-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="form-control" placeholder="Commentaire" />
             </div>
             <div class="col-md-4">
@@ -71,7 +71,7 @@
         <div class="row mt-2">
             <div class="col-md-4">
                 <input asp-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="form-control" placeholder="Recepteur" />
-            </div>
+            </div>*@
         </div>
         <div class="row mt-2">
             <div class="col-md-4">
@@ -84,75 +84,6 @@
     </form>
 </div>
 
-@*<div id="Grid">
-    <table  class="table table-hover">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">ID Courrier</th>
-            <th scope="col">Reference</th>
-            <th scope="col">Objet</th>
-            <th scope="col">Date Creation</th>
-            <th scope="col">Expediteur</th>
-            <th scope="col">Flag</th>
-            <th scope="col">Commentaire</th>
-            <th scope="col">Destinataire</th>
-            <th scope="col">Responsable</th>
-            <th scope="col">Statut</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var courrier in Model.ListeCourrier)
-        {
-            <tr>
-                <td><a href="@Url.Page("Historique", new { id = courrier.IdCourrierDestinataire, idDepartement = courrier.IdDepartement, idStatut = courrier.IdStatut })">@courrier.IdCourrierDestinataire</a></td>
-                <td>@courrier.IdCourrier</td>
-                <td>@courrier.Reference</td>
-                <td>@courrier.Objet</td>
-                <td>@courrier.DateCreation</td>
-                <td>@courrier.Expediteur</td>
-                <td>@courrier.Flag</td>
-                <td>@courrier.Commentaire</td>
-                <td>@courrier.NomDepartement</td>
-                <td>@courrier.NomResponsable</td>
-                <td>@courrier.NomStatut</td>
-            </tr>
-        }
-    </tbody>
-</table>
-</div>
-
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        @if (Model._pageNumber > 1)
-        {
-            <li class="page-item">
-                <a class="page-link" href="?pageNumber=1">&laquo;</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?pageNumber=@(Model._pageNumber - 1)">&lt;</a>
-            </li>
-        }
-
-        @for (int i = 1; i <= Model._totalPages; i++)
-        {
-            <li class="page-item @(i == Model._pageNumber ? "active" : "")">
-                <a class="page-link" href="?pageNumber=@i">@i</a>
-            </li>
-        }
-
-        @if (Model._pageNumber < Model._totalPages)
-        {
-            <li class="page-item">
-                <a class="page-link" href="?pageNumber=@(Model._pageNumber + 1)">&gt;</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?pageNumber=@Model._totalPages">&raquo;</a>
-            </li>
-        }
-    </ul>
-</nav>
-
 <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript">
     $(function () {
@@ -160,7 +91,7 @@
             $("input[name='GridHtml']").val($("#Grid").html());
         });
     });
-</script>*@
+</script>
 
 <div id="Grid">
     <table class="table">
@@ -170,28 +101,28 @@
                 #
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Objet)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Objet)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Reference)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Reference)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Commentaire)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Commentaire)
             </th>
             <th>
                 Pièce Jointe
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.DateCreation)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.DateCreation)
             </th>
             <th>
                 Expéditeur
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Recepteur)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Recepteur)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].CourrierDestinataire.Courrier.Flag)
+                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Flag)
             </th>
             <th>
                 Destinataire
@@ -209,56 +140,56 @@
         {
             <tr>
                 <td>
-                    <a href="@Url.Page("Historique", new { id = item.IdCourrierDestinataire, idDepartement = item.CourrierDestinataire.IdDepartementDestinataire, idStatut = item.IdStatut })">
-                        @Html.DisplayFor(modelItem => item.IdCourrierDestinataire)
+                    <a href="@Url.Page("Historique", new { id = item.Id, idDepartement = item.IdDepartementDestinataire, idStatut = item.IdStatut })">
+                        @Html.DisplayFor(modelItem => item.Id)
                     </a>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Objet)
+                    @Html.DisplayFor(modelItem => item.Courrier.Objet)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Reference)
+                    @Html.DisplayFor(modelItem => item.Courrier.Reference)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Commentaire)
+                    @Html.DisplayFor(modelItem => item.Courrier.Commentaire)
                 </td>
                 <td>
                     @{
-                        var fileName = System.IO.Path.GetFileName(item.CourrierDestinataire.Courrier.Fichier);
+                        var fileName = System.IO.Path.GetFileName(item.Courrier.Fichier);
                     }
                     @fileName
                 </td>
                 <td>
-                    @item.CourrierDestinataire.Courrier.DateCreation.ToString()
+                    @item.Courrier.DateCreation.ToString()
 
                 </td>
-                @if (item.CourrierDestinataire.Courrier.ExpediteurInterne != null)
+                @if (item.Courrier.ExpediteurInterne != null)
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.ExpediteurInterne.Designation)
+                        @Html.DisplayFor(modelItem => item.Courrier.ExpediteurInterne.Designation)
                     </td>
                 }
                 else
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.ExpediteurExterne)
+                        @Html.DisplayFor(modelItem => item.Courrier.ExpediteurExterne)
                     </td>
                 }
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Recepteur.Nom)
+                    @Html.DisplayFor(modelItem => item.Courrier.Recepteur.Nom)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Flag)
+                    @Html.DisplayFor(modelItem => item.Courrier.Flag)
                 </td>
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.CourrierDestinataire.Departement.Designation)*@
+                    @Html.DisplayFor(modelItem => item.DepartementDestinataire.Designation)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Statut.Designation)
                 </td>
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.Utilisateur.Nom)*@
+                    @Html.DisplayFor(modelItem => item.Responsable.Nom)
                 </td>
             </tr>
         }

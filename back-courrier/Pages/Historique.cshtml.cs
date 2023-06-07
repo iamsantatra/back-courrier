@@ -16,7 +16,7 @@ namespace back_courrier.Pages
         public List<Utilisateur> Prochain;
         private Utilisateur _currentUser;
         [BindProperty]
-        public Historique Historique { get; set; } = default!;
+        public CourrierDestinataire Historique { get; set; } = default!;
         public HistoriqueModel(ApplicationDbContext context, ICourrierService courrierService,
             IUtilisateurService employeService, IConfiguration configuration)
         {
@@ -33,7 +33,7 @@ namespace back_courrier.Pages
             if(Prochain != null) { 
                 ViewData["Prochain"] = new SelectList(Prochain, "Id", "Nom");
             }
-            Historique = _courrierService.GetHistoriqueByIdCourrierDestinataire(id);
+            Historique = _courrierService.GetDetailsCourrier(id);
             if (Historique == null)
             {
                 return RedirectToPage("./ListeCourrier");

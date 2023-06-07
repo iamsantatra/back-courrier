@@ -21,7 +21,7 @@
                     }
                 </div>
             }*@
-            <div class="form-group">
+           @* <div class="form-group">
                 <label asp-for="Historique.IdCourrierDestinataire" class="control-label"></label>
                 <input asp-for="Historique.IdCourrierDestinataire" value = "@Model.Historique.IdCourrierDestinataire" class="form-control" disabled/>
                 <span asp-validation-for="Historique.IdCourrierDestinataire" class="text-danger"></span>
@@ -52,8 +52,8 @@
                 <label class="control-label">Date création</label>
                 <input asp-for="Historique.CourrierDestinataire.Courrier.DateCreation" value="@Model.Historique.CourrierDestinataire.Courrier.DateCreation.ToString()" class="form-control" disabled />
                 <span asp-validation-for="Historique.CourrierDestinataire.Courrier.DateCreation" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            </div>*@
+            @*<div class="form-group">
                 <label class="control-label">Expéditeur</label>
                 @if (Model.Historique.CourrierDestinataire.Courrier.ExpediteurInterne != null)
                 {
@@ -64,8 +64,8 @@
                     <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurExterne" value="@Model.Historique.CourrierDestinataire.Courrier.ExpediteurExterne" class="form-control" disabled />
                     <span asp-validation-for="Historique.CourrierDestinataire.Courrier.ExpediteurExterne" class="text-danger"></span>
                 }
-            </div>
-            <div class="form-group">
+            </div>*@
+            @*<div class="form-group">
                 <label class="control-label">Recepteur</label>
                 <input asp-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" value="@Model.Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="form-control" disabled />
                 <span asp-validation-for="Historique.CourrierDestinataire.Courrier.Recepteur.Nom" class="text-danger"></span>
@@ -77,9 +77,9 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Département cible</label>
-                @*<input asp-for="Historique.CourrierDestinataire.Departement.Designation" value="@Model.Historique.CourrierDestinataire.Departement.Designation" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Departement.Designation" class="text-danger"></span>*@
-            </div>
+                <input asp-for="Historique.CourrierDestinataire.Departement.Designation" value="@Model.Historique.CourrierDestinataire.Departement.Designation" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Departement.Designation" class="text-danger"></span>
+            </div>*@
             
                 @if (Model.Prochain != null && Model.Prochain.Any())
                 {
@@ -96,17 +96,17 @@
                                 <p>En attente...</p>
                             }
                         </div>
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <label class="control-label">Date historique</label>
                             <input asp-for="Historique.DateHistorique" class="form-control" />
                             <span asp-validation-for="Historique.DateHistorique" class="text-danger"></span>
-                        </div>
+                        </div>*@
                         @*<input type="hidden" asp-for="Historique.Id" value="@Model.Historique.Id" />*@
                         @*<input type="hidden" asp-for="Historique.IdStatut" value="@Model.Historique.IdStatut" />*@
-                        <input type="hidden" asp-for="Historique.IdCourrierDestinataire" value="@Model.Historique.IdCourrierDestinataire" />
+                        @*<input type="hidden" asp-for="Historique.IdCourrierDestinataire" value="@Model.Historique.IdCourrierDestinataire" />
                         <div class="form-group mt-3">
                             <input type="submit" value="Transferer" class="btn btn-primary" />
-                        </div>
+                        </div>*@
                     </form>
                 }
             

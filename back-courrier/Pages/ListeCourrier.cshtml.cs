@@ -20,8 +20,8 @@ namespace back_courrier.Pages
         private readonly IUtilisateurService _employeService;
         private readonly IConfiguration _configuration;
         private Utilisateur _currentUser;
-        public IList<Historique> listeCourrier { get; set; }
-        public IList<Historique> listeCourrierSansPag { get; set; }
+        public IList<CourrierDestinataire> listeCourrier { get; set; }
+        public IList<CourrierDestinataire> listeCourrierSansPag { get; set; }
         /*public IList<Utilisateur> listeCoursier { get; set; }*/
         public int _pageNumber { get; set; } = 1;
         public int _totalPages { get; set; }
@@ -30,11 +30,11 @@ namespace back_courrier.Pages
         {
             string dirRole = _configuration.GetValue<string>("Constants:Role:DirRole");
             string secRole = _configuration.GetValue<string>("Constants:Role:SecRole");
-            string courRole = _configuration.GetValue<string>("Constants:Role:CourRole");
+            string courRole = _configuration.GetValue<string>("Constants:Role:CouRole");
             string recRole = _configuration.GetValue<string>("Constants:Role:RecRole");
             ViewData["DirRole"] = dirRole;
             ViewData["SecRole"] = secRole;
-            ViewData["CourRole"] = courRole;
+            ViewData["CouRole"] = courRole;
             ViewData["RecRole"] = recRole;
            /* listeCoursier = _employeService.GetUtilisateurByRole(_configuration.GetValue<string>("Constants:Role:CourRole"));
             ViewData["Coursiers"] = new SelectList(listeCoursier, "Id", "Nom");*/
@@ -51,7 +51,7 @@ namespace back_courrier.Pages
         }
 
         [BindProperty]
-        public Historique Historique { get; set; }
+        public CourrierDestinataire Historique { get; set; }
 
         [BindProperty]
         public DateTime? DateCreationStart { get; set; } = null;

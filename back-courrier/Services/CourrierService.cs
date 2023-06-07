@@ -23,20 +23,22 @@ namespace back_courrier.Services
         public Courrier CreationCourrier(Courrier courrier, Utilisateur employe,
             List<Departement> SelectedDestinataires, IFormFile formFile)
         {
-            Statut statusCreer = _context.Statut.Where(s => s.Code == "REC").First();
+            Statut statusCreer = _context.Statut.Where(s => s.Code == _configuration["Constants:Role:RecRole"]).First();
             courrier.Recepteur = employe;
             courrier.IdReceptionniste = employe.Id;
             courrier.Fichier = _fileUploadService.UploadFileAsync(formFile);
-            /*List<CourrierDestinataire> destinataires = SelectedDestinataires
-                .Select(departement => new CourrierDestinataire(courrier, departement)).ToList();
-            _context.Courrier.Add(courrier);
-            courrier.Destinataires = destinataires;*/
-            // get statut where code = "REC"
-            Statut statut = _context.Statut.FirstOrDefault(s => s.Code == _configuration["Constants:Role:RecRole"]);
-/*            destinataires.ForEach(courrierDestinataire =>
+            if(!courrier.DateCreation.HasValue)
             {
-                _context.Historique.Add(new Historique(courrierDestinataire, statut, employe));
-            });*/
+                courrier.DateCreation = DateTime.Now;
+            }
+            List<CourrierDestinataire> destinataires = SelectedDestinataires
+                .Select(departement => new CourrierDestinataire(courrier, departement, statusCreer, employe)).ToList();
+            _context.Courrier.Add(courrier);
+            courrier.Destinataires = destinataires;
+            destinataires.ForEach(courrierDestinataire =>
+            {
+                _context.Historique.Add(new Historique(courrierDestinataire, statusCreer, employe));
+            });
             return courrier;
         }
 

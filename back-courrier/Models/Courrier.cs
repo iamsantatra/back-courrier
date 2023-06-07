@@ -8,7 +8,7 @@ namespace back_courrier.Models
 
         [Required]
         public string Objet { get; set; }
-        public DateTime DateCreation { get; set; } = DateTime.Now;
+        public DateTime? DateCreation { get; set; } = DateTime.Now;
         
         public string? ExpediteurExterne { get; set; }
 

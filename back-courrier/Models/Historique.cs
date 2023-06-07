@@ -14,14 +14,14 @@ namespace back_courrier.Models
         public DateTime? DateHistorique { get; set; } = DateTime.Now;
         [ForeignKey("Utilisateur")]
         public int IdResponsable { get; set; }
-        public Utilisateur? Utilisateur { get; set; } 
+        public Utilisateur? Responsable { get; set; } 
 
         public Historique() { }
-        public Historique(CourrierDestinataire courrierDestinataire, Statut statut, Utilisateur utilisateur)
+        public Historique(CourrierDestinataire courrierDestinataire, Statut statut, Utilisateur responsable)
         {
             this.CourrierDestinataire = courrierDestinataire;
             this.Statut = statut;
-            this.Utilisateur = utilisateur;
+            this.Responsable = responsable;
         }
     }
 }

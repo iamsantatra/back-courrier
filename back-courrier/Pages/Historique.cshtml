@@ -77,8 +77,8 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Département cible</label>
-                <input asp-for="Historique.CourrierDestinataire.Departement.Designation" value="@Model.Historique.CourrierDestinataire.Departement.Designation" class="form-control" disabled />
-                <span asp-validation-for="Historique.CourrierDestinataire.Departement.Designation" class="text-danger"></span>
+                @*<input asp-for="Historique.CourrierDestinataire.Departement.Designation" value="@Model.Historique.CourrierDestinataire.Departement.Designation" class="form-control" disabled />
+                <span asp-validation-for="Historique.CourrierDestinataire.Departement.Designation" class="text-danger"></span>*@
             </div>
             
                 @if (Model.Prochain != null && Model.Prochain.Any())

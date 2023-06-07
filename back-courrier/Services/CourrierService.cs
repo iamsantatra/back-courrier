@@ -27,16 +27,16 @@ namespace back_courrier.Services
             courrier.Recepteur = employe;
             courrier.IdReceptionniste = employe.Id;
             courrier.Fichier = _fileUploadService.UploadFileAsync(formFile);
-            List<CourrierDestinataire> destinataires = SelectedDestinataires
+            /*List<CourrierDestinataire> destinataires = SelectedDestinataires
                 .Select(departement => new CourrierDestinataire(courrier, departement)).ToList();
             _context.Courrier.Add(courrier);
-            courrier.Destinataires = destinataires;
+            courrier.Destinataires = destinataires;*/
             // get statut where code = "REC"
             Statut statut = _context.Statut.FirstOrDefault(s => s.Code == _configuration["Constants:Role:RecRole"]);
-            destinataires.ForEach(courrierDestinataire =>
+/*            destinataires.ForEach(courrierDestinataire =>
             {
                 _context.Historique.Add(new Historique(courrierDestinataire, statut, employe));
-            });
+            });*/
             return courrier;
         }
 
@@ -55,9 +55,9 @@ namespace back_courrier.Services
                     .ThenInclude(cd => cd.Courrier)
                         .ThenInclude(c => c.Recepteur)
                 .Include(h => h.CourrierDestinataire)
-                    .ThenInclude(cd => cd.Departement)
+                    .ThenInclude(cd => cd.DepartementDestinataire)
                 .Include(h => h.Statut)
-                .Include(h => h.Utilisateur)
+                .Include(h => h.Responsable)
                 .Where(h => subquery.Contains(h.Id))
                 /*.OrderByDescending(h => h.Id)*/;
             /*.Skip((pageNumber - 1) * pageSize)
@@ -142,7 +142,7 @@ namespace back_courrier.Services
                 .Include(h => h.CourrierDestinataire)
                     .ThenInclude(cd => cd.Courrier)
                 .Include(h => h.CourrierDestinataire)
-                    .ThenInclude(cd => cd.Departement)
+                    .ThenInclude(cd => cd.DepartementDestinataire)
                 .Include(h => h.CourrierDestinataire)
                         .ThenInclude(cd => cd.Courrier)
                             .ThenInclude(c => c.Recepteur)
@@ -159,7 +159,6 @@ namespace back_courrier.Services
             _context.Historique.Add(hResultat);
             return hResultat;
         }
-
         public byte[] ExportPDF(IList<Historique> historiques)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -218,9 +217,9 @@ namespace back_courrier.Services
                     }
                     PdfPCell cell7 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Recepteur.Nom));
                     PdfPCell cell8 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Courrier.Flag));
-                    PdfPCell cell9 = new PdfPCell(new Phrase(historique.CourrierDestinataire.Departement.Designation));
+                    PdfPCell cell9 = new PdfPCell(new Phrase(historique.CourrierDestinataire.DepartementDestinataire.Designation));
                     PdfPCell cell10 = new PdfPCell(new Phrase(historique.Statut.Designation));
-                    PdfPCell cell11 = new PdfPCell(new Phrase(historique.Utilisateur.Nom));
+                    PdfPCell cell11 = new PdfPCell(new Phrase(historique.Responsable.Nom));
                     table.AddCell(cell1);
                     table.AddCell(cell2);
                     table.AddCell(cell3);
@@ -301,8 +300,8 @@ namespace back_courrier.Services
             {
                 query = query.Where(h => h.Statut.Designation.Contains(historique.Statut.Designation));
             }
-
-            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.Departement.Designation))
+/*
+            if (!string.IsNullOrEmpty(historique.CourrierDestinataire.DepartementDestinat.Designation))
             {
                 query = query.Where(h => h.CourrierDestinataire.Departement.Designation
                     .Contains(historique.CourrierDestinataire.Departement.Designation));
@@ -311,7 +310,7 @@ namespace back_courrier.Services
             if (!string.IsNullOrEmpty(historique.Utilisateur.Nom))
             {
                 query = query.Where(h => h.Utilisateur.Nom.Contains(historique.Utilisateur.Nom));
-            }
+            }*/
 
             return query;
         }

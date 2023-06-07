@@ -54,12 +54,12 @@
                 <input asp-for="Historique.CourrierDestinataire.Courrier.ExpediteurInterne.Designation" class="form-control" placeholder="Expediteur interne" />
             </div>
             <div class="col-md-4">
-                <input asp-for="Historique.Utilisateur.Nom" class="form-control" placeholder="Nom responsable" />
+                @*<input asp-for="Historique.Utilisateur.Nom" class="form-control" placeholder="Nom responsable" />*@
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4">
-                <input asp-for="Historique.CourrierDestinataire.Departement.Designation" class="form-control" placeholder="Destinataire" />
+               @* <input asp-for="Historique.CourrierDestinataire.Departement.Designation" class="form-control" placeholder="Destinataire" />*@
             </div>
             <div class="col-md-4">
                 <input asp-for="Historique.CourrierDestinataire.Courrier.Commentaire" class="form-control" placeholder="Commentaire" />
@@ -252,13 +252,13 @@
                     @Html.DisplayFor(modelItem => item.CourrierDestinataire.Courrier.Flag)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourrierDestinataire.Departement.Designation)
+                    @*@Html.DisplayFor(modelItem => item.CourrierDestinataire.Departement.Designation)*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Statut.Designation)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Utilisateur.Nom)
+                    @*@Html.DisplayFor(modelItem => item.Utilisateur.Nom)*@
                 </td>
             </tr>
         }

@@ -2,6 +2,7 @@ using back_courrier.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using back_courrier.Services;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,9 +38,11 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
     // dbContext.Database.GenerateCreateScript();
     dbContext.Database.Migrate();
+    dbContext.SeedData();
 }
 
 // Configure the HTTP request pipeline.
@@ -58,7 +61,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.Use(async (context, next) =>
+/*app.Use(async (context, next) =>
 {
     await next();
 
@@ -66,6 +69,17 @@ app.Use(async (context, next) =>
     {
         context.Response.Redirect("/Error");
     }
+});*/
+
+app.Use(async (context, next) =>
+{
+    if (!context.User.Identity.IsAuthenticated && context.Request.Path != "/Index")
+    {
+        context.Response.Redirect("/Index");
+        return;
+    }
+
+    await next();
 });
 
 app.MapRazorPages();

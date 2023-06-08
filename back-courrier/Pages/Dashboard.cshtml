@@ -1,0 +1,61 @@
+﻿@page
+@model back_courrier.Pages.DashboardModel
+@{
+    ViewData["Title"] = "Tableau de bord";
+}
+
+<h1>Tableau de bord</h1>
+
+@if (ViewData.ModelState.Any())
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <span>@error.ErrorMessage</span>
+            <br />
+        }
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                Courrier par Flag
+            </div>
+            <div class="card-body">
+                <canvas class="my-4 h-25" id="courrierByFlag" style="height: 50px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/chart.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>*@
+<script type="text/javascript">
+    var data = @Html.Raw(Json.Serialize(Model.CourriersByFlag));
+    console.log("data: "+data);
+    var labels = Object.keys(data);
+    console.log("labels: " + labels);
+    var values = Object.values(data);
+    console.log("values: " + values);
+
+    var chartData = {
+        labels: labels,
+        datasets: [{
+            data: values,
+            label: 'Courrier par Flag',
+            backgroundColor: ['Blue', 'Yellow', 'Red'], // Customize the colors as needed
+            borderWidth: 1
+        }]
+    };
+
+    var ctx = document.getElementById('courrierByFlag').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: chartData,
+        options: {
+            responsive: true
+        }
+    });
+</script>

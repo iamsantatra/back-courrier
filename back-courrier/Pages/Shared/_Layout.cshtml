@@ -25,6 +25,9 @@
                                 <a class="nav-link text-dark" asp-area="" asp-page="/ListeCourrier">Accueil</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Dashboard">Tableau de bord</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" href="Index?handler=Logout">
                                     Déconnexion (@User.Identity.Name)
                                 </a>
@@ -60,6 +63,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

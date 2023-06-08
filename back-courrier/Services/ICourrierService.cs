@@ -25,5 +25,6 @@ namespace back_courrier.Services
         Pages<CourrierDestinataire> ListeCourrierPage(Utilisateur employe, int pageNumber, int pageSize);
         IQueryable<CourrierDestinataire> ListeCourrierQuerySansPage(Utilisateur employe);
         IQueryable<CourrierDestinataire> ListeCourrierBaseQueryPage(IQueryable<CourrierDestinataire> listeCourrierBaseQuery, int pageNumber, int pageSize);
+        public Dictionary<string, int> GetStatCourrierFlag();
     }
 }

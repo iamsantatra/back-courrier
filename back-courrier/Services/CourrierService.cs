@@ -396,6 +396,21 @@ namespace back_courrier.Services
 
             return query;
         }
+
+        public Dictionary<string, int> GetStatCourrierFlag()
+        {
+            var flags = _context.Flag.Select(f => f.Designation).ToList();
+            var courriersByFlag = _context.CourrierDestinataire
+                .GroupBy(cd => cd.Courrier.Flag.Designation)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            courriersByFlag = flags.ToDictionary(
+                flag => flag,
+                flag => courriersByFlag.ContainsKey(flag) ? courriersByFlag[flag] : 0
+            );
+
+            return courriersByFlag;
+        }
     }
 }
 

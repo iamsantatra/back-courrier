@@ -19,12 +19,22 @@
 
 <div class="row">
     <div class="col-sm-6">
+        <div class="card" >
+            <div class="card-header">
+                Courrier par flag
+            </div>
+            <div class="card-body" style="height: 500px">
+                <canvas id="courrierByFlag" ></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
         <div class="card">
             <div class="card-header">
-                Courrier par Flag
+                Courrier par département 
             </div>
-            <div class="card-body">
-                <canvas class="my-4 h-25" id="courrierByFlag" style="height: 50px;"></canvas>
+            <div class="card-body" style="height: 500px">
+                <canvas id="courrierByDep"></canvas>
             </div>
         </div>
     </div>
@@ -55,7 +65,37 @@
         type: 'pie',
         data: chartData,
         options: {
-            responsive: true
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    var data = @Html.Raw(Json.Serialize(Model.CourriersByFlag));
+    console.log("data: " + data);
+    var labels = Object.keys(data);
+    console.log("labels: " + labels);
+    var values = Object.values(data);
+    console.log("values: " + values);
+
+    var chartData = {
+        labels: labels,
+        datasets: [{
+            data: values,
+            label: 'Courrier par Flag',
+            backgroundColor: ['Blue', 'Yellow', 'Red'], // Customize the colors as needed
+            borderWidth: 1
+        }]
+    };
+
+    var ctx = document.getElementById('courrierByFlag').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
         }
     });
 </script>

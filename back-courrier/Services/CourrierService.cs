@@ -397,6 +397,8 @@ namespace back_courrier.Services
             return query;
         }
 
+        // tableau de bord
+
         public Dictionary<string, int> GetStatCourrierFlag()
         {
             var flags = _context.Flag.Select(f => f.Designation).ToList();
@@ -410,6 +412,22 @@ namespace back_courrier.Services
             );
 
             return courriersByFlag;
+        }
+
+        // fonction courrierdestinataire par destinataire comme  public Dictionary<string, int> GetStatCourrierFlag()
+        public Dictionary<string, int> GetStatCourrierDestinataire()
+        {
+            var destinataires = _context.Departement.Select(d => d.Designation).ToList();
+            var courriersByDestinataire = _context.CourrierDestinataire
+                .GroupBy(cd => cd.DepartementDestinataire.Designation)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            courriersByDestinataire = destinataires.ToDictionary(
+                destinataire => destinataire,
+                destinataire => courriersByDestinataire.ContainsKey(destinataire) ? courriersByDestinataire[destinataire] : 0
+            );
+
+            return courriersByDestinataire;
         }
     }
 }

@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-6">
-            @if (ViewData.ModelState.Any())
+@*            @if (ViewData.ModelState.Any())
             {
                 <div class="alert alert-danger">
                     @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
@@ -20,7 +20,7 @@
                         <br />
                     }
                 </div>
-            }
+            }*@
             <div class="form-group">
             <label asp-for="CourrierDestinataire.Id" class="control-label"></label>
                 <input asp-for="CourrierDestinataire.Id" value = "@Model.CourrierDestinataire.Id" class="form-control" disabled/>

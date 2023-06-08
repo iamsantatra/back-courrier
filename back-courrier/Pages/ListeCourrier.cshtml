@@ -23,7 +23,7 @@
     </div>
 </div>
 <div>
-    <form method="post" asp-page-handler="Search">
+    <form method="get" action="/ListeCourrier">
         <div class="row">
             <div class="col-md-4">
                 <input asp-for="cd.Courrier.Reference" class="form-control" placeholder="Reference" />
@@ -32,7 +32,7 @@
                 <input asp-for="cd.Courrier.Objet" class="form-control" placeholder="Objet" />
             </div>
             <div class="col-md-4">
-                <input asp-for="cd.Courrier.Flag" class="form-control" placeholder="Flag" />
+                <input asp-for="cd.Courrier.Flag.Designation" class="form-control" placeholder="Flag" />
             </div>
         </div>
         <div class="row mt-2">
@@ -180,7 +180,7 @@
                     @Html.DisplayFor(modelItem => item.Courrier.Recepteur.Nom)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Courrier.Flag)
+                    @Html.DisplayFor(modelItem => item.Courrier.Flag.Designation)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DepartementDestinataire.Designation)

@@ -58,6 +58,8 @@ namespace back_courrier.Services
                 .Include(cd => cd.Courrier)
                     .ThenInclude(c => c.ExpediteurInterne)
                 .Include(cd => cd.Courrier)
+                    .ThenInclude(c => c.Flag)
+                .Include(cd => cd.Courrier)
                     .ThenInclude(c => c.Recepteur)
                 .Include(cd => cd.Responsable)
                     .ThenInclude(r => r.Departement)
@@ -240,7 +242,7 @@ namespace back_courrier.Services
                         cell6 = new PdfPCell(new Phrase(cd.Courrier.ExpediteurExterne));
                     }
                     PdfPCell cell7 = new PdfPCell(new Phrase(cd.Courrier.Recepteur.Nom));
-                    PdfPCell cell8 = new PdfPCell(new Phrase(cd.Courrier.Flag));
+                    PdfPCell cell8 = new PdfPCell(new Phrase(cd.Courrier.Flag.Designation));
                     PdfPCell cell9 = new PdfPCell(new Phrase(cd.DepartementDestinataire.Designation));
                     PdfPCell cell10 = new PdfPCell(new Phrase(cd.Statut.Designation));
                     PdfPCell cell11 = new PdfPCell(new Phrase(cd.Responsable.Nom));
@@ -266,7 +268,9 @@ namespace back_courrier.Services
         }
 
         public IQueryable<CourrierDestinataire> QuerySearchBuilder(DateTime? DateCreationStart, DateTime? DateCreationEnd,
-            CourrierDestinataire courrierDestinataire, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
+            string reference = null, string objet = null, string expediteurExterne = null, string expediteurInterne = null,
+            string nomResponsable = null, string destinataire = null, string commentaire = null, string fichier = null,
+            string recepteur = null, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination)
         {
             var query = this.ListeCourrierQuery(employe, pageNumber, pageSize, pagination);
 
@@ -284,34 +288,34 @@ namespace back_courrier.Services
                     && h.Courrier.DateCreation <= DateCreationEnd.Value);
             }
 
-            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.Reference))
+            if (!string.IsNullOrEmpty(reference))
             {
                 query = query.Where(h => h.Courrier.Reference
-                    .Contains(courrierDestinataire.Courrier.Reference));
+                    .Contains(reference));
             }
 
-            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.Objet))
+            if (!string.IsNullOrEmpty(objet))
             {
                 query = query.Where(h => h.Courrier.Objet
-                    .Contains(courrierDestinataire.Courrier.Objet));
+                    .Contains(objet));
             }
 
-            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.ExpediteurExterne))
+            if (!string.IsNullOrEmpty(expediteurExterne))
             {
                 query = query.Where(h => h.Courrier.ExpediteurExterne
-                    .Contains(courrierDestinataire.Courrier.ExpediteurExterne));
+                    .Contains(expediteurExterne));
             }
 
-            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.ExpediteurInterne.Designation))
+            if (!string.IsNullOrEmpty(expediteurInterne))
             {
                 query = query.Where(h => h.Courrier.ExpediteurInterne.Designation
-                    .Contains(courrierDestinataire.Courrier.ExpediteurInterne.Designation));
+                    .Contains(expediteurInterne));
             }
 
-            if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.Flag))
+            if (!string.IsNullOrEmpty(flag))
             {
-                query = query.Where(h => h.Courrier.Flag
-                    .Contains(courrierDestinataire.Courrier.Flag));
+                query = query.Where(h => h.Courrier.Flag.Designation
+                    .Contains(flag));
             }
 
             if (!string.IsNullOrEmpty(courrierDestinataire.Courrier.Commentaire))

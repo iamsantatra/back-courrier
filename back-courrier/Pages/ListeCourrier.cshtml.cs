@@ -26,7 +26,11 @@ namespace back_courrier.Pages
         public int _pageNumber { get; set; } = 1;
         public int _totalPages { get; set; }
         public int _pageSize { get; set; } = 10;
-        public async Task OnGetAsync(int pageNumber = 1)
+        public async Task OnGetAsync(int pageNumber = 1, DateTime? dateCreationStart = null, DateTime? dateCreationEnd = null,
+            string reference = null, string objet = null, string expediteurExterne = null, string expediteurInterne = null, 
+            string nomResponsable = null, string destinataire = null, string commentaire = null, string fichier = null, 
+            string recepteur = null, string flag = null, string statut = null
+        )
         {
             string dirRole = _configuration.GetValue<string>("Constants:Role:DirRole");
             string secRole = _configuration.GetValue<string>("Constants:Role:SecRole");
@@ -36,22 +40,28 @@ namespace back_courrier.Pages
             ViewData["SecRole"] = secRole;
             ViewData["CouRole"] = courRole;
             ViewData["RecRole"] = recRole;
-           /* listeCoursier = _employeService.GetUtilisateurByRole(_configuration.GetValue<string>("Constants:Role:CourRole"));
-            ViewData["Coursiers"] = new SelectList(listeCoursier, "Id", "Nom");*/
 
-/*            if (_context.Courrier != null)
-            {*/
-                _currentUser = _employeService.GetUtilisateurByClaim(User);
-                _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
-                _pageNumber = pageNumber;
+            _currentUser = _employeService.GetUtilisateurByClaim(User);
+            _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
+            _pageNumber = pageNumber;
+
+            if (!dateCreationStart.HasValue && !dateCreationEnd.HasValue && string.IsNullOrEmpty(reference) && string.IsNullOrEmpty(objet) &&
+                string.IsNullOrEmpty(expediteurExterne) && string.IsNullOrEmpty(expediteurInterne) && string.IsNullOrEmpty(nomResponsable) &&
+                string.IsNullOrEmpty(destinataire) && string.IsNullOrEmpty(commentaire) && string.IsNullOrEmpty(fichier) &&
+                string.IsNullOrEmpty(recepteur))
+            {
                 listeCourrier = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, true);
                 listeCourrierSansPag = _courrierService.ListeCourrier(_currentUser, _pageNumber, _pageSize, false);
                 _totalPages = Helper.CalculateTotalPage(listeCourrierSansPag.ToList(), _pageSize);
-/*            }*/
+            } 
+            else
+            {
+                listeCourrier = _courrierService.ListeRecherche(DateCreationStart, DateCreationEnd, cd, _currentUser, _pageNumber, _pageSize, true);
+                listeCourrierSansPag = _courrierService.ListeRecherche(DateCreationStart, DateCreationEnd, cd, _currentUser, _pageNumber, _pageSize, false);
+                _totalPages = Helper.CalculateTotalPage(listeCourrierSansPag.ToList(), _pageSize);
+            }
+           
         }
-
-        [BindProperty]
-        public CourrierDestinataire cd { get; set; }
 
         [BindProperty]
         public DateTime? DateCreationStart { get; set; } = null;
@@ -100,9 +110,9 @@ namespace back_courrier.Pages
             };
         }
 
-        public async Task<IActionResult> OnPostSearch()
+/*        public async Task<IActionResult> OnPostSearch()
         {
-            /*await OnGetAsync(_pageNumber);*/
+            *//*await OnGetAsync(_pageNumber);*//*
             _currentUser = _employeService.GetUtilisateurByClaim(User);
             _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
             string dirRole = _configuration.GetValue<string>("Constants:Role:DirRole");
@@ -117,6 +127,6 @@ namespace back_courrier.Pages
             listeCourrierSansPag = _courrierService.ListeRecherche(DateCreationStart, DateCreationEnd, cd, _currentUser, _pageNumber, _pageSize, false);
             _totalPages = Helper.CalculateTotalPage(listeCourrierSansPag.ToList(), _pageSize);
             return Page();
-        }
+        }*/
     }
 }

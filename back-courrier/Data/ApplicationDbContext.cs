@@ -10,6 +10,7 @@ namespace back_courrier.Data
             : base(options)
         {
         }
+        public DbSet<Flag> Flag { get; set; }
         public DbSet<Poste> Poste { get; set; }
         public DbSet<Departement> Departement { get; set; }
         public DbSet<Utilisateur> Utilisateur { get; set; }
@@ -34,6 +35,12 @@ namespace back_courrier.Data
             //Courrier
             modelBuilder.Entity<Courrier>()
                 .HasOne(e => e.Recepteur);
+
+            modelBuilder.Entity<Courrier>()
+                .HasOne(c => c.Flag)
+                .WithMany()
+                .HasForeignKey(c => c.IdFlag)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Courrier>()
                .HasOne(e => e.ExpediteurInterne);
@@ -86,6 +93,14 @@ namespace back_courrier.Data
 
         public void SeedData()
         {
+            var flagsS = new List<Flag>
+            {
+                new Flag{Designation="normal" },
+                new Flag{Designation="important" },
+                new Flag{Designation="urgent" }
+            };
+            flagsS.ForEach(p => Flag.Add(p));
+
             var postes = new List<Poste>
             {
                 new Poste{Code="REC", Designation="Receptionniste" },
@@ -124,6 +139,61 @@ namespace back_courrier.Data
                 new Statut{Code="DIR", Designation="livré"}
             };
             statuts.ForEach(r => Statut.Add(r));
+            SaveChanges();
+
+            var random = new Random();
+
+            for (int i = 0; i < 50; i++)
+            {
+                var courrier = new Courrier
+                {
+                    Reference = "REF" + i.ToString("000"),
+                    Objet = "Objet du courrier " + i.ToString(),
+                    DateCreation = DateTime.Now.AddDays(-random.Next(1, 30)),
+                    ExpediteurExterne = "Expediteur externe " + i.ToString(),
+                    IdFlag = random.Next(1, 3),
+                    Commentaire = "Commentaire du courrier " + i.ToString(),
+                    Fichier = "Chemin du fichier " + i.ToString(),
+                    IdReceptionniste = 1,
+                    /*IdExpediteur = expediteursInternes[random.Next(0, expediteursInternes.Count)].IdDepartement,*/
+                };
+                
+                Courrier.Add(courrier);
+                SaveChanges();
+
+                var destinataires = new List<CourrierDestinataire>
+                {
+                    new CourrierDestinataire
+                    {
+                        IdCourrier = courrier.Id,
+                        IdDepartementDestinataire = 2,
+                        IdStatut = 1,
+                        IdResponsable = 1,
+                        // Ajoutez d'autres propriétés selon vos besoins
+                    },
+                    new CourrierDestinataire
+                    {
+                        IdCourrier = courrier.Id,
+                        IdDepartementDestinataire = 3,
+                        IdStatut = 1,
+                        IdResponsable = 1,
+                        // Ajoutez d'autres propriétés selon vos besoins
+                    },
+                };
+
+                CourrierDestinataire.AddRange(destinataires);
+                SaveChanges();
+
+                var historiques = destinataires.Select(destinataire => new Historique
+                {
+                    IdCourrierDestinataire = destinataire.Id,
+                    IdStatut = 1,
+                    IdResponsable = 1,
+                    // Ajoutez d'autres propriétés selon vos besoins
+                }).ToList();
+
+                Historique.AddRange(historiques);
+            }
 
             SaveChanges();
 

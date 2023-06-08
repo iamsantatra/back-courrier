@@ -29,10 +29,10 @@ namespace back_courrier.Pages
 
         public IActionResult OnGet()
         {
-            var flags = new List<string> { "normal", "urgent", "important" };
+/*            var flags = new List<string> { "normal", "urgent", "important" };*/
 
             ViewData["IdExpediteur"] = new SelectList(_context.Departement, "Id", "Designation");
-            ViewData["Flag"] = new SelectList(flags);
+            ViewData["Flag"] = new SelectList(_context.Flag, "Id", "Designation");
             ViewData["IdRecepteur"] = new SelectList(_context.Utilisateur, "Id", "Nom");
             ViewData["Destinataires"] = new SelectList(_context.Departement, "Id", "Designation");
             return Page();

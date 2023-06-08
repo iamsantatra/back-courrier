@@ -12,8 +12,9 @@ namespace back_courrier.Models
         
         public string? ExpediteurExterne { get; set; }
 
-        [Required]
-        public string Flag { get; set; }
+        [ForeignKey("Flag")]
+        public int IdFlag { get; set; }
+        public Flag? Flag { get; set; }
         public string? Commentaire { get; set; }
         public string? Fichier { get; set; }
 

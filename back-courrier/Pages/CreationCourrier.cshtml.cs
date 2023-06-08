@@ -17,6 +17,7 @@ namespace back_courrier.Pages
         private readonly ICourrierService _courrierService;
         private readonly IUtilisateurService _employeService;
         private List<Departement> departements { get; set; }
+        private List<Flag> flags { get; set; }
         public CreationCourrierModel(ApplicationDbContext context,
             ICourrierService courrierService,
             IUtilisateurService employeService)
@@ -25,6 +26,7 @@ namespace back_courrier.Pages
             _courrierService = courrierService;
             _employeService = employeService;
             departements = _context.Departement.ToList();
+            flags = _context.Flag.ToList();
         }
 
         public IActionResult OnGet()
@@ -46,6 +48,8 @@ namespace back_courrier.Pages
 
         [BindProperty]
         public List<string> SelectedDestinataires { get; set; }
+        [BindProperty]
+        public string SelectedFlag { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
@@ -61,6 +65,9 @@ namespace back_courrier.Pages
                 Utilisateur connectedUser = _employeService.GetUtilisateurByPseudo(pseudo);
                 List<Departement> SelectedDepartements = departements
                     .Where(dept => SelectedDestinataires.Contains(dept.Id + "")).ToList();
+                Flag Flag = flags
+                    .Where(flag => SelectedFlag.Contains(flag.Id + "")).First();
+                Courrier.Flag = Flag;
                 connectedUser.Poste = _context.Poste.Find(connectedUser.IdPoste);
                 _courrierService.CreationCourrier(Courrier, connectedUser, SelectedDepartements, FileUpload);
                 await _context.SaveChangesAsync();

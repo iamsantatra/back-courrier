@@ -98,8 +98,14 @@ namespace back_courrier.Pages
         public async Task<IActionResult> OnGetExport(int pageNumber)
         {
             // Call the ExportPDF function to generate the PDF content
-            await OnGetAsync(pageNumber);
-            /*byte[] pdfContent = _courrierService.ExportPDF(listeCourrier);
+            /*await OnGetAsync(pageNumber);*/
+            _currentUser = _employeService.GetUtilisateurByClaim(User);
+            _currentUser.Poste = _context.Poste.FirstOrDefault(p => p.Id == _currentUser.IdPoste);
+
+            byte[] pdfContent = _courrierService.ExportPDF(_courrierService.ListeRecherche(dateCreationStart, dateCreationEnd,
+                    reference, objet, expediteurExterne, expediteurInterne,
+                    nomResponsable, destinataire, commentaire, fichier,
+                    recepteur, flag, statut, _currentUser, pageNumber, _pageSize).Liste);
             // Generate a unique file name
             string fileName = "liste-courrier-" + DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
             // Set the content type of the file
@@ -108,7 +114,7 @@ namespace back_courrier.Pages
             return new FileContentResult(pdfContent, contentType)
             {
                 FileDownloadName = fileName
-            };*/
+            };
             return null;
         }
 

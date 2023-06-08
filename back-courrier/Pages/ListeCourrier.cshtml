@@ -18,7 +18,7 @@
     <div class="col-md-1">
         <form method="post">
             <input type="hidden" name="GridHtml" />
-            <a href="ListeCourrier?handler=Export&PageNumber=@Model.listeCourrier.PageNumber" class="btn btn-success"> Exporter </a>
+            <a href="ListeCourrier?handler=Export&PageNumber=@Model.listeCourrier.PageNumber@(GetQueryString())" class="btn btn-success"> Exporter </a>
         </form>
     </div>
 </div>
@@ -43,7 +43,7 @@
                 <input asp-for="dateCreationEnd" class="form-control" placeholder="DateCreationEnd" />
             </div>
             <div class="col-md-4">
-                <input name="statut" class="form-control" placeholder="Nom Statut" />
+                <input name="statut" class="form-control" placeholder="Statut" />
             </div>
         </div>
         <div class="row mt-2">

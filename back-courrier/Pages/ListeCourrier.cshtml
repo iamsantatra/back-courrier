@@ -18,7 +18,7 @@
     <div class="col-md-1">
         <form method="post">
             <input type="hidden" name="GridHtml" />
-            <a href="ListeCourrier?handler=Export&PageNumber=@Model._pageNumber" class="btn btn-success"> Exporter </a>
+            <a href="ListeCourrier?handler=Export&PageNumber=@Model.listeCourrier.PageNumber" class="btn btn-success"> Exporter </a>
         </form>
     </div>
 </div>
@@ -26,51 +26,51 @@
     <form method="get" action="/ListeCourrier">
         <div class="row">
             <div class="col-md-4">
-                <input asp-for="cd.Courrier.Reference" class="form-control" placeholder="Reference" />
+                <input name="reference" class="form-control" placeholder="Reference" />
             </div>
             <div class="col-md-4">
-                <input asp-for="cd.Courrier.Objet" class="form-control" placeholder="Objet" />
+                <input name="objet" class="form-control" placeholder="Objet" />
             </div>
             <div class="col-md-4">
-                <input asp-for="cd.Courrier.Flag.Designation" class="form-control" placeholder="Flag" />
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-4">
-                <input asp-for="@Model.DateCreationStart" class="form-control" placeholder="DateCreationStart" />
-            </div>
-            <div class="col-md-4">
-                <input asp-for="@Model.DateCreationEnd" class="form-control" placeholder="DateCreationEnd" />
-            </div>
-            <div class="col-md-4">
-                <input asp-for="cd.Statut.Designation" class="form-control" placeholder="Nom Statut" />
+                <input name="flag" class="form-control" placeholder="Flag" />
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4">
-                <input asp-for="cd.Courrier.ExpediteurExterne" class="form-control" placeholder="Expediteur externe" />
+                <input asp-for="dateCreationStart" class="form-control" placeholder="DateCreationStart" />
             </div>
             <div class="col-md-4">
-                <input asp-for="cd.Courrier.ExpediteurInterne.Designation" class="form-control" placeholder="Expediteur interne" />
+                <input asp-for="dateCreationEnd" class="form-control" placeholder="DateCreationEnd" />
             </div>
             <div class="col-md-4">
-                <input asp-for="cd.Responsable.Nom" class="form-control" placeholder="Nom responsable" />
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-4">
-                <input asp-for="cd.DepartementDestinataire.Designation" class="form-control" placeholder="Destinataire" />
-            </div>
-            <div class="col-md-4">
-                <input asp-for="cd.Courrier.Commentaire" class="form-control" placeholder="Commentaire" />
-            </div>
-            <div class="col-md-4">
-                <input asp-for="cd.Courrier.Fichier" class="form-control" placeholder="Pièce jointe" />
+                <input name="statut" class="form-control" placeholder="Nom Statut" />
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-4">
-                <input asp-for="cd.Courrier.Recepteur.Nom" class="form-control" placeholder="Recepteur" />
+                <input name="expediteurExterne" class="form-control" placeholder="Expediteur externe" />
+            </div>
+            <div class="col-md-4">
+                <input name="expediteurInterne" class="form-control" placeholder="Expediteur interne" />
+            </div>
+            <div class="col-md-4">
+                <input name="nomResponsable" class="form-control" placeholder="Nom responsable" />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                <input name="destinataire" class="form-control" placeholder="Destinataire" />
+            </div>
+            <div class="col-md-4">
+                <input name="commentaire" class="form-control" placeholder="Commentaire" />
+            </div>
+            <div class="col-md-4">
+                <input name="fichier" class="form-control" placeholder="Pièce jointe" />
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4">
+                <input name="recepteur" class="form-control" placeholder="Recepteur" />
             </div>
         </div>
         <div class="row mt-2">
@@ -101,28 +101,28 @@
                 #
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Objet)
+                @Html.DisplayNameFor(model => model.listeCourrier.Liste[0].Courrier.Objet)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Reference)
+                @Html.DisplayNameFor(model => model.listeCourrier.Liste[0].Courrier.Reference)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Commentaire)
+                @Html.DisplayNameFor(model => model.listeCourrier.Liste[0].Courrier.Commentaire)
             </th>
             <th>
                 Pièce Jointe
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.DateCreation)
+                @Html.DisplayNameFor(model => model.listeCourrier.Liste[0].Courrier.DateCreation)
             </th>
             <th>
                 Expéditeur
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Recepteur)
+                @Html.DisplayNameFor(model => model.listeCourrier.Liste[0].Courrier.Recepteur)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.listeCourrier[0].Courrier.Flag)
+                @Html.DisplayNameFor(model => model.listeCourrier.Liste[0].Courrier.Flag)
             </th>
             <th>
                 Destinataire
@@ -136,7 +136,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.listeCourrier)
+        @foreach (var item in Model.listeCourrier.Liste)
         {
             <tr>
                 <td>
@@ -199,30 +199,30 @@
 
 <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
-        @if (Model._pageNumber > 1)
+        @if (Model.listeCourrier.PageNumber > 1)
         {
             <li class="page-item">
-                <a class="page-link" href="?pageNumber=1">&laquo;</a>
+                <a class="page-link" href="?pageNumber=1@(GetQueryString())">&laquo;</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?pageNumber=@(Model._pageNumber - 1)">&lt;</a>
+                <a class="page-link" href="?pageNumber=@(Model.listeCourrier.PageNumber - 1)@(GetQueryString())">&lt;</a>
             </li>
         }
 
-        @for (int i = 1; i <= Model._totalPages; i++)
+        @for (int i = 1; i <= Model.listeCourrier.TotalPages; i++)
         {
-            <li class="page-item @(i == Model._pageNumber ? "active" : "")">
-                <a class="page-link" href="?pageNumber=@i">@i</a>
+            <li class="page-item @(i == Model.listeCourrier.PageNumber ? "active" : "")">
+                <a class="page-link" href="?pageNumber=@i@(GetQueryString())">@i</a>
             </li>
         }
 
-        @if (Model._pageNumber < Model._totalPages)
+        @if (Model.listeCourrier.PageNumber < Model.listeCourrier.TotalPages)
         {
             <li class="page-item">
-                <a class="page-link" href="?pageNumber=@(Model._pageNumber + 1)">&gt;</a>
+                <a class="page-link" href="?pageNumber=@(Model.listeCourrier.PageNumber + 1)@(GetQueryString())">&gt;</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?pageNumber=@Model._totalPages">&raquo;</a>
+                <a class="page-link" href="?pageNumber=@(Model.listeCourrier.TotalPages)@(GetQueryString())">&raquo;</a>
             </li>
         }
     </ul>
@@ -236,3 +236,106 @@
         });
     });
 </script>
+
+@functions {
+    // Méthode pour obtenir la chaîne de requête des critères de recherche
+    private string GetQueryString()
+    {
+/*        [BindProperty(SupportsGet = true)]
+                public DateTime? DateCreationStart { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public DateTime? DateCreationEnd { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? reference { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? objet { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? expediteurExterne { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? expediteurInterne { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? nomResponsable { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? destinataire { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? commentaire { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? fichier { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? recepteur { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? flag { get; set; }
+                [BindProperty(SupportsGet = true)]
+                public string? statut { get; set; }*/
+
+        string queryString = "";
+
+        // generate all condition for BindProperty and concatenate them to queryString
+        if (Model.dateCreationStart.HasValue)
+        {
+            queryString += "&dateCreationStart=" + Model.dateCreationStart;
+        }
+
+        if (Model.dateCreationEnd.HasValue)
+        {
+            queryString += "&dateCreationEnd=" + Model.dateCreationEnd;
+        }
+
+        if (!string.IsNullOrEmpty(Model.reference))
+        {
+            queryString += "&reference=" + Model.reference;
+        }
+
+        if (!string.IsNullOrEmpty(Model.objet))
+        {
+            queryString += "&objet=" + Model.objet;
+        }
+
+        if (!string.IsNullOrEmpty(Model.expediteurExterne))
+        {
+            queryString += "&expediteurExterne=" + Model.expediteurExterne;
+        }
+        
+        if (!string.IsNullOrEmpty(Model.expediteurInterne))
+        {
+            queryString += "&expediteurInterne=" + Model.expediteurInterne;
+        }
+
+        if (!string.IsNullOrEmpty(Model.nomResponsable))
+        {
+            queryString += "&nomResponsable=" + Model.nomResponsable;
+        }
+
+        if (!string.IsNullOrEmpty(Model.destinataire))
+        {
+            queryString += "&destinataire=" + Model.destinataire;
+        }
+
+        if (!string.IsNullOrEmpty(Model.commentaire))
+        {
+            queryString += "&commentaire=" + Model.commentaire;
+        }
+
+        if (!string.IsNullOrEmpty(Model.fichier))
+        {
+            queryString += "&fichier=" + Model.fichier;
+        }
+
+        if (!string.IsNullOrEmpty(Model.recepteur))
+        {
+            queryString += "&recepteur=" + Model.recepteur;
+        }
+
+        if (!string.IsNullOrEmpty(Model.flag))
+        {
+            queryString += "&flag=" + Model.flag;
+        }
+
+        if (!string.IsNullOrEmpty(Model.statut))
+        {
+            queryString += "&statut=" + Model.statut;
+        }
+
+        return queryString;
+    }
+}

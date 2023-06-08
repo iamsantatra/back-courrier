@@ -5,20 +5,25 @@ namespace back_courrier.Services
     public interface ICourrierService
     {
         Courrier CreationCourrier(Courrier courrier, Utilisateur employe, List<Departement> destinataires, IFormFile formFile);
-        IQueryable<CourrierDestinataire> ListeCourrierBaseQuery(int pageNumber, int pageSize, Boolean pagination);
-        IQueryable<CourrierDestinataire> ListeCourrierReceptionnisteQuery(int pageNumber, int pageSize, Boolean pagination);
-        IQueryable<CourrierDestinataire> ListeCourrierCoursierQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
-        IQueryable<CourrierDestinataire> ListeCourrierSecQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
-        IQueryable<CourrierDestinataire> ListeCourrierDirQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
-        IQueryable<CourrierDestinataire> ListeCourrierQuery(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
+        IQueryable<CourrierDestinataire> ListeCourrierBaseQuery();
+        IQueryable<CourrierDestinataire> ListeCourrierReceptionnisteQuery();
+        IQueryable<CourrierDestinataire> ListeCourrierCoursierQuery(Utilisateur employe);
+        IQueryable<CourrierDestinataire> ListeCourrierSecQuery(Utilisateur employe);
+        IQueryable<CourrierDestinataire> ListeCourrierDirQuery(Utilisateur employe);
+        IQueryable<CourrierDestinataire> ListeCourrierQuery(Utilisateur employe);
         CourrierDestinataire GetDetailsCourrier(int IdCourrierDestinataire);
         CourrierDestinataire TransfertCourrier(CourrierDestinataire courrierDestinataire);
         byte[] ExportPDF(IList<CourrierDestinataire> listeCourrier);
         IQueryable<CourrierDestinataire> QuerySearchBuilder(DateTime? DateCreationStart, DateTime? DateCreationEnd,
-            CourrierDestinataire courrierDestinataire, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
-        IList<CourrierDestinataire> ListeRecherche(DateTime? DateCreationStart, DateTime? DateCreationEnd,
-            CourrierDestinataire courrierDestinataire, Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
-
-        IList<CourrierDestinataire> ListeCourrier(Utilisateur employe, int pageNumber, int pageSize, Boolean pagination);
+            string reference, string objet, string expediteurExterne, string expediteurInterne,
+            string nomResponsable, string destinataire, string commentaire, string fichier,
+            string recepteur, string flag, string statut, Utilisateur employe);
+        Pages<CourrierDestinataire> ListeRecherche(DateTime? DateCreationStart, DateTime? DateCreationEnd,
+            string reference, string objet, string expediteurExterne, string expediteurInterne,
+            string nomResponsable, string destinataire, string commentaire, string fichier,
+            string recepteur, string flag, string statut, Utilisateur employe, int pageNumber, int pageSize);
+        Pages<CourrierDestinataire> ListeCourrierPage(Utilisateur employe, int pageNumber, int pageSize);
+        IQueryable<CourrierDestinataire> ListeCourrierQuerySansPage(Utilisateur employe);
+        IQueryable<CourrierDestinataire> ListeCourrierBaseQueryPage(IQueryable<CourrierDestinataire> listeCourrierBaseQuery, int pageNumber, int pageSize);
     }
 }

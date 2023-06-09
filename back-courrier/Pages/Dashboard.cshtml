@@ -34,7 +34,7 @@
                 Courrier par département 
             </div>
             <div class="card-body" style="height: 500px">
-                <canvas id="courrierByDep"></canvas>
+                <canvas id="courrierByDepartement"></canvas>
             </div>
         </div>
     </div>
@@ -43,24 +43,28 @@
 <script src="~/js/chart.js"></script>
 @*<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>*@
 <script type="text/javascript">
-    var data = @Html.Raw(Json.Serialize(Model.CourriersByFlag));
+    let data = @Html.Raw(Json.Serialize(Model.CourriersByFlag));
     console.log("data: "+data);
-    var labels = Object.keys(data);
+    let labels = Object.keys(data);
     console.log("labels: " + labels);
-    var values = Object.values(data);
+    let values = Object.values(data);
     console.log("values: " + values);
 
-    var chartData = {
+    let chartData = {
         labels: labels,
         datasets: [{
             data: values,
             label: 'Courrier par Flag',
-            backgroundColor: ['Blue', 'Yellow', 'Red'], // Customize the colors as needed
+            backgroundColor: [
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(255, 99, 132)'
+            ], 
             borderWidth: 1
         }]
     };
 
-    var ctx = document.getElementById('courrierByFlag').getContext('2d');
+    let ctx = document.getElementById('courrierByFlag').getContext('2d');
     new Chart(ctx, {
         type: 'pie',
         data: chartData,
@@ -69,33 +73,41 @@
             maintainAspectRatio: false
         }
     });
-</script>
 
-<script type="text/javascript">
-    var data = @Html.Raw(Json.Serialize(Model.CourriersByFlag));
-    console.log("data: " + data);
-    var labels = Object.keys(data);
-    console.log("labels: " + labels);
-    var values = Object.values(data);
-    console.log("values: " + values);
+    let dataDepartement = @Html.Raw(Json.Serialize(Model.CourriersByDestinataire));
+    console.log("dataDepartement: " + dataDepartement);
+    let labelsDepartement = Object.keys(dataDepartement);
+    console.log("labels: " + dataDepartement);
+    let valuesDepartement = Object.values(dataDepartement);
+    console.log("values: " + dataDepartement);
 
-    var chartData = {
-        labels: labels,
+    let chartDataDepartement = {
+        labels: labelsDepartement,
         datasets: [{
             data: values,
-            label: 'Courrier par Flag',
-            backgroundColor: ['Blue', 'Yellow', 'Red'], // Customize the colors as needed
+            label: 'Courrier par Département',
+            backgroundColor: [
+                'rgb(54, 162, 235)',
+                'rgb(75, 192, 192)',
+                'rgb(255, 205, 86)'
+            ], // Customize the colors as needed
             borderWidth: 1
         }]
     };
 
-    var ctx = document.getElementById('courrierByFlag').getContext('2d');
-    new Chart(ctx, {
-        type: 'pie',
-        data: chartData,
+    let ctxDepartement = document.getElementById('courrierByDepartement').getContext('2d');
+    new Chart(ctxDepartement, {
+        type: 'bar',
+        data: chartDataDepartement,
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
+
 </script>

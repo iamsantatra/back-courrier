@@ -11,10 +11,12 @@ namespace back_courrier.Pages
         private readonly ICourrierService _courrierService;
 
         public Dictionary<string, int> CourriersByFlag { get; set; }
+        public Dictionary<string, int> CourriersByDestinataire { get; set; }
 
         public void OnGet()
         {
             CourriersByFlag = _courrierService.GetStatCourrierFlag();
+            CourriersByDestinataire = _courrierService.GetStatCourrierDestinataire();
         }
 
         public DashboardModel(Data.ApplicationDbContext context, ICourrierService courrierService)

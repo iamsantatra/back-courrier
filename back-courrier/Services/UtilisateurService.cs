@@ -8,9 +8,11 @@ namespace back_courrier.Services
     public class UtilisateurService : IUtilisateurService
     {
         private readonly ApplicationDbContext _context;
-        public UtilisateurService(ApplicationDbContext context)
+        private readonly IConfiguration _configuration;
+        public UtilisateurService(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public Utilisateur GetUtilisateurByClaim(ClaimsPrincipal currentUser)
@@ -37,6 +39,7 @@ namespace back_courrier.Services
         public List<Utilisateur> GetUtilisateurSuivant(Utilisateur UtilisateurCourant, int IdDepartement, int IdStatut)
         {
             List<Utilisateur>? listProchain = null;
+            List<Utilisateur>? listSecretaire = null;
             int PosteCourante = UtilisateurCourant.IdPoste;
             int PosteSuivante = UtilisateurCourant.IdPoste + 1;
             // receptionniste et reçu
@@ -48,6 +51,8 @@ namespace back_courrier.Services
             else if (PosteCourante == 2 && IdStatut == 2)
             {
                 listProchain = _context.Utilisateur.Where(u => u.IdPoste == PosteSuivante && u.IdDepartement == IdDepartement).ToList();
+                listSecretaire = _context.Utilisateur.Where(u => u.IdPoste == PosteSuivante + 1 && u.IdDepartement == IdDepartement).ToList();
+                listProchain.AddRange(listSecretaire);
             }
             // sécrétaire et transferé au sécrétaire
             else if (PosteCourante == 3 && IdStatut == 3 && UtilisateurCourant.IdDepartement == IdDepartement)
@@ -60,6 +65,25 @@ namespace back_courrier.Services
                 listProchain = _context.Utilisateur.Where(u => u.IdPoste == PosteSuivante && u.IdDepartement == IdDepartement).ToList();
             }
             return listProchain;
+        }
+
+        public List<Utilisateur> GetCoursier()
+        {
+            return _context.Utilisateur.Where(u => u.Poste.Code == _configuration["Constants:Role:CouRole"]).ToList();
+        }
+        public List<Utilisateur> GetSecretaireByDep(int idDepartement)
+        {
+            return _context.Utilisateur.Where(u => u.Poste.Code == _configuration["Constants:Role:SecRole"] && u.IdDepartement == idDepartement).ToList();
+        }
+
+        public List<Utilisateur> GetDirecteurByDep(int idDepartement)
+        {
+            return _context.Utilisateur.Where(u => u.Poste.Code == _configuration["Constants:Role:DirRole"] && u.IdDepartement == idDepartement).ToList();
+        }
+
+        public Utilisateur GetUtilisateurByid(int id)
+        {
+            return _context.Utilisateur.FirstOrDefault(u => u.Id == id);
         }
     }
 }

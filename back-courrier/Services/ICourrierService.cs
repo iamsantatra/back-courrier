@@ -27,5 +27,10 @@ namespace back_courrier.Services
         IQueryable<CourrierDestinataire> ListeCourrierBaseQueryPage(IQueryable<CourrierDestinataire> listeCourrierBaseQuery, int pageNumber, int pageSize);
         public Dictionary<string, int> GetStatCourrierFlag();
         public Dictionary<string, int> GetStatCourrierDestinataire();
+
+        public CourrierDestinataire TransfertCoursier(CourrierDestinataire courrierDestinataire);
+        public CourrierDestinataire TransfertSecretaire(CourrierDestinataire courrierDestinataire);
+        public CourrierDestinataire TransfertDirecteur(CourrierDestinataire courrierDestinataire);
+
     }
 }

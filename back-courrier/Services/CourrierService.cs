@@ -229,6 +229,88 @@ namespace back_courrier.Services
             return cd;
         }
 
+        public CourrierDestinataire TransfertCoursier(CourrierDestinataire courrierDestinataire)
+        {
+            CourrierDestinataire cd = courrierDestinataire;
+            if (cd != null)
+            {
+                cd.IdStatut = 2;
+                cd.IdResponsable = cd.IdResponsable;
+                var defaultDate = DateTime.UtcNow;
+
+                Historique historique = new Historique
+                {
+                    IdCourrierDestinataire = cd.Id,
+                    IdStatut = cd.IdStatut,
+                    IdResponsable = cd.IdResponsable,
+                    DateHistorique = cd.DateMaj
+                };
+                if (!cd.DateMaj.HasValue)
+                {
+                    cd.DateMaj = defaultDate;
+                    historique.DateHistorique = DateTime.UtcNow;
+                }
+                _context.Update(cd);
+                _context.Historique.Add(historique);
+                _context.SaveChanges();
+            }
+            return cd;
+        }
+        public CourrierDestinataire TransfertSecretaire(CourrierDestinataire courrierDestinataire)
+        {
+            CourrierDestinataire cd = courrierDestinataire;
+            if (cd != null)
+            {
+                cd.IdStatut = 3;
+                cd.IdResponsable = cd.IdResponsable;
+                var defaultDate = DateTime.UtcNow;
+
+                Historique historique = new Historique
+                {
+                    IdCourrierDestinataire = cd.Id,
+                    IdStatut = cd.IdStatut,
+                    IdResponsable = cd.IdResponsable,
+                    DateHistorique = cd.DateMaj
+                };
+                if (!cd.DateMaj.HasValue)
+                {
+                    cd.DateMaj = defaultDate;
+                    historique.DateHistorique = DateTime.UtcNow;
+                }
+                _context.Update(cd);
+                _context.Historique.Add(historique);
+                _context.SaveChanges();
+            }
+            return cd;
+        }
+        public CourrierDestinataire TransfertDirecteur(CourrierDestinataire courrierDestinataire)
+        {
+            CourrierDestinataire cd = courrierDestinataire;
+            if (cd != null)
+            {
+                cd.IdStatut = 4;
+                cd.IdResponsable = cd.IdResponsable;
+                var defaultDate = DateTime.UtcNow;
+
+                Historique historique = new Historique
+                {
+                    IdCourrierDestinataire = cd.Id,
+                    IdStatut = cd.IdStatut,
+                    IdResponsable = cd.IdResponsable,
+                    DateHistorique = cd.DateMaj
+                };
+                if (!cd.DateMaj.HasValue)
+                {
+                    cd.DateMaj = defaultDate;
+                    historique.DateHistorique = DateTime.UtcNow;
+                }
+                _context.Update(cd);
+                _context.Historique.Add(historique);
+                _context.SaveChanges();
+            }
+            return cd;
+        }
+
         public byte[] ExportPDF(IList<CourrierDestinataire> cds)
         {
             using (MemoryStream stream = new MemoryStream())

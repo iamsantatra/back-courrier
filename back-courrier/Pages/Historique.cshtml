@@ -50,7 +50,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Date création</label>
-                <input asp-for="CourrierDestinataire.Courrier.DateCreation" value="@Model.CourrierDestinataire.Courrier.DateCreation.ToString()" class="form-control" disabled />
+                <input type="text" asp-for="CourrierDestinataire.Courrier.DateCreation" value="@Model.CourrierDestinataire.Courrier.DateCreation" class="form-control" disabled />
                 <span asp-validation-for="CourrierDestinataire.Courrier.DateCreation" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -72,7 +72,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Flag</label>
-                <input asp-for="CourrierDestinataire.Courrier.Flag" value="@Model.CourrierDestinataire.Courrier.Flag" class="form-control" disabled />
+                <input asp-for="CourrierDestinataire.Courrier.Flag" value="@Model.CourrierDestinataire.Courrier.Flag.Designation" class="form-control" disabled />
                 <span asp-validation-for="CourrierDestinataire.Courrier.Flag" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -80,31 +80,93 @@
                 <input asp-for="CourrierDestinataire.DepartementDestinataire.Designation" value="@Model.CourrierDestinataire.DepartementDestinataire.Designation" class="form-control" disabled />
                 <span asp-validation-for="CourrierDestinataire.DepartementDestinataire.Designation" class="text-danger"></span>
             </div>
-            
-                @if (Model.Prochain != null && Model.Prochain.Any())
-                {
-                    <form method="post">
-                        <div class="form-group">
-                            <label class="control-label">Responsable</label>
-                            <select asp-for="CourrierDestinataire.IdResponsable" class="form-control" asp-items="ViewBag.Prochain"></select>
-                            <span asp-validation-for="CourrierDestinataire.IdResponsable" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">Date historique</label>
-                    <input asp-for="CourrierDestinataire.DateMaj" class="form-control" />
-                    <span asp-validation-for="CourrierDestinataire.DateMaj" class="text-danger"></span>
-                        </div>
-                            <input type="hidden" asp-for="CourrierDestinataire.Id" value="@Model.CourrierDestinataire.Id" />
-                            <input type="hidden" asp-for="CourrierDestinataire.IdStatut" value="@Model.CourrierDestinataire.IdStatut" />
-                            <input type="hidden" asp-for="CourrierDestinataire.IdCourrier" value="@Model.CourrierDestinataire.IdCourrier" />
-                            <input type="hidden" asp-for="CourrierDestinataire.IdDepartementDestinataire" value="@Model.CourrierDestinataire.IdDepartementDestinataire" />
-                            @*<input type="hidden" asp-for="CourrierDestinataire.IdResponsable" value="@Model.CourrierDestinataire.IdResponsable" />*@
-                        <div class="form-group mt-3">
-                            <input type="submit" value="Transferer" class="btn btn-primary" />
-                        </div>
-                    </form>
-                }
-            
+
+            @if (User.IsInRole(ViewData["RecRole"].ToString()) && Model.IdStatut == 1)
+            {
+                <form method="post">
+                    <input type="hidden" asp-for="CourrierDestinataire.Id" value="@Model.CourrierDestinataire.Id" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdStatut" value="@Model.CourrierDestinataire.IdStatut" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdCourrier" value="@Model.CourrierDestinataire.IdCourrier" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdDepartementDestinataire" value="@Model.CourrierDestinataire.IdDepartementDestinataire" />
+                    <div class="form-group">
+                        <label class="control-label">Date historique</label>
+                        <input asp-for="CourrierDestinataire.DateMaj" class="form-control" />
+                        <span asp-validation-for="CourrierDestinataire.DateMaj" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Coursier</label>
+                        <select asp-for="CourrierDestinataire.IdResponsable" class="form-control" asp-items="ViewBag.Coursiers"></select>
+                        <span asp-validation-for="CourrierDestinataire.IdResponsable" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <input type="submit" value="Transferer coursier" class="btn btn-primary" />
+                    </div>
+                </form>
+            }
+            @if (User.IsInRole(ViewData["CouRole"].ToString()) && Model.IdStatut == 2)
+            {
+                <form method="post">
+                    <input type="hidden" asp-for="CourrierDestinataire.Id" value="@Model.CourrierDestinataire.Id" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdStatut" value="@Model.CourrierDestinataire.IdStatut" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdCourrier" value="@Model.CourrierDestinataire.IdCourrier" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdDepartementDestinataire" value="@Model.CourrierDestinataire.IdDepartementDestinataire" />
+                    <div class="form-group">
+                        <label class="control-label">Date historique</label>
+                        <input asp-for="CourrierDestinataire.DateMaj" class="form-control" />
+                        <span asp-validation-for="CourrierDestinataire.DateMaj" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="control-label">Secretaire</label>
+                        <select asp-for="CourrierDestinataire.IdResponsable" class="form-control" asp-items="ViewBag.Secretaires"></select>
+                        <span asp-validation-for="CourrierDestinataire.IdResponsable" class="text-danger"></span>
+                        <input type="submit" value="Transferer secretaire" class="btn btn-primary mt-3" />
+                    </div>
+                </form>
+                        
+                <form method="post">
+                    <input type="hidden" asp-for="CourrierDestinataire.Id" value="@Model.CourrierDestinataire.Id" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdStatut" value="@Model.CourrierDestinataire.IdStatut" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdCourrier" value="@Model.CourrierDestinataire.IdCourrier" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdDepartementDestinataire" value="@Model.CourrierDestinataire.IdDepartementDestinataire" />
+                    <div class="form-group">
+                        <label class="control-label">Date historique</label>
+                        <input asp-for="CourrierDestinataire.DateMaj" class="form-control" />
+                        <span asp-validation-for="CourrierDestinataire.DateMaj" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="control-label">Directeur</label>
+                        <select asp-for="CourrierDestinataire.IdResponsable" class="form-control" asp-items="ViewBag.Directeurs"></select>
+                        <span asp-validation-for="CourrierDestinataire.IdResponsable" class="text-danger"></span>
+                        <input type="submit" value="Transferer directeur" class="btn btn-primary mt-3" />
+                    </div> 
+                </form>
+            }
+            @if (User.IsInRole(ViewData["SecRole"].ToString()) && Model.IdStatut == 3)
+            {
+                <form method="post">
+                    <input type="hidden" asp-for="CourrierDestinataire.Id" value="@Model.CourrierDestinataire.Id" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdStatut" value="@Model.CourrierDestinataire.IdStatut" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdCourrier" value="@Model.CourrierDestinataire.IdCourrier" />
+                    <input type="hidden" asp-for="CourrierDestinataire.IdDepartementDestinataire" value="@Model.CourrierDestinataire.IdDepartementDestinataire" />
+                    <div class="form-group">
+                        <label class="control-label">Date historique</label>
+                        <input asp-for="CourrierDestinataire.DateMaj" class="form-control" />
+                        <span asp-validation-for="CourrierDestinataire.DateMaj" class="text-danger"></span>
+                    </div>
+                
+                
+                    <div class="form-group">
+                        <label class="control-label">Directeur</label>
+                        <select asp-for="CourrierDestinataire.IdResponsable" class="form-control" asp-items="ViewBag.Directeurs"></select>
+                        <span asp-validation-for="CourrierDestinataire.IdResponsable" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <input type="submit" value="Transferer directeur" class="btn btn-primary" />
+                    </div>
+                </form>
+            }
     </div>
 </div>
 

@@ -10,11 +10,11 @@
         <h1>Liste des courriers @*(@Model.listeCourrierSansPag.Count)*@</h1>
     </div>
         @if (User.IsInRole(ViewData["RecRole"].ToString()))
-    {
-        <div class="col-md-2">
-            <a class="btn btn-primary" href="CreationCourrier">Ajouter courrier</a>
-        </div>
-    }
+        {
+            <div class="col-md-2">
+                <a class="btn btn-primary" href="CreationCourrier">Ajouter courrier</a>
+            </div>
+        }
     <div class="col-md-1">
         <form method="post">
             <input type="hidden" name="GridHtml" />
